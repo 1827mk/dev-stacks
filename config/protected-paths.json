@@ -1,0 +1,82 @@
+{
+  "version": "1.0.0",
+  "rules": [
+    {
+      "id": "env-files",
+      "pattern": ".env*",
+      "action": "BLOCK",
+      "reason": "Environment files contain secrets",
+      "severity": "CRITICAL"
+    },
+    {
+      "id": "private-keys",
+      "pattern": "*.pem",
+      "action": "BLOCK",
+      "reason": "Private key files",
+      "severity": "CRITICAL"
+    },
+    {
+      "id": "key-files",
+      "pattern": "*.key",
+      "action": "BLOCK",
+      "reason": "Key files",
+      "severity": "CRITICAL"
+    },
+    {
+      "id": "git-directory",
+      "pattern": ".git/",
+      "action": "BLOCK",
+      "reason": "Git internal directory",
+      "severity": "CRITICAL"
+    },
+    {
+      "id": "credentials",
+      "pattern": "credentials*",
+      "action": "BLOCK",
+      "reason": "Credentials files",
+      "severity": "CRITICAL"
+    },
+    {
+      "id": "secrets",
+      "pattern": "secrets*",
+      "action": "BLOCK",
+      "reason": "Secrets files",
+      "severity": "CRITICAL"
+    },
+    {
+      "id": "package-config",
+      "pattern": "package.json",
+      "action": "CONFIRM",
+      "reason": "Package configuration affects dependencies",
+      "severity": "HIGH"
+    },
+    {
+      "id": "package-lock",
+      "pattern": "package-lock.json",
+      "action": "CONFIRM",
+      "reason": "Lock file affects dependency versions",
+      "severity": "HIGH"
+    },
+    {
+      "id": "tsconfig",
+      "pattern": "tsconfig.json",
+      "action": "CONFIRM",
+      "reason": "TypeScript configuration",
+      "severity": "MEDIUM"
+    },
+    {
+      "id": "config-files",
+      "pattern": "*.config.*",
+      "action": "CONFIRM",
+      "reason": "Configuration files",
+      "severity": "MEDIUM"
+    },
+    {
+      "id": "migrations",
+      "pattern": "migrations/",
+      "action": "CONFIRM",
+      "reason": "Database migrations",
+      "severity": "HIGH"
+    }
+  ]
+}

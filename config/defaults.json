@@ -1,0 +1,27 @@
+{
+  "version": "1.0.0",
+  "workflow": {
+    "quick": { "minComplexity": 0.0, "maxComplexity": 0.19 },
+    "standard": { "minComplexity": 0.2, "maxComplexity": 0.39 },
+    "careful": { "minComplexity": 0.4, "maxComplexity": 0.59 },
+    "full": { "minComplexity": 0.6, "maxComplexity": 1.0 }
+  },
+  "agents": {
+    "thinker": { "model": "claude-sonnet-4-6", "enabled": true },
+    "builder": { "model": "claude-sonnet-4-6", "enabled": true },
+    "tester": { "model": "claude-sonnet-4-6", "enabled": true }
+  },
+  "guards": {
+    "enabled": true,
+    "confirmTimeout": 5000
+  },
+  "pattern": {
+    "minConfidence": 0.5,
+    "maxAge": 30,
+    "maxUndoLevels": 20
+  },
+  "research": {
+    "enabled": true,
+    "tools": ["context7", "web_reader", "WebSearch", "fetch"]
+  }
+}
