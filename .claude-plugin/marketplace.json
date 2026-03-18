@@ -11,7 +11,7 @@
   "plugins": [
     {
       "name": "dev-stacks",
-      "source": "../",
+      "source": "./plugin",
       "description": "Zero-friction AI development assistant. Intent routing, adaptive workflows, agent teams, pattern learning, and safety guards. Thai/English support.",
       "version": "1.0.0",
       "author": {
