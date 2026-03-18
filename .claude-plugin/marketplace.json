@@ -1,0 +1,34 @@
+{
+  "name": "dev-stacks-marketplace",
+  "owner": {
+    "name": "1827mk",
+    "email": ""
+  },
+  "metadata": {
+    "description": "Zero-friction AI development assistant plugins for Claude Code",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "dev-stacks",
+      "source": "./",
+      "description": "Zero-friction AI development assistant. Intent routing, adaptive workflows, agent teams, pattern learning, and safety guards. Thai/English support.",
+      "version": "1.0.0",
+      "author": {
+        "name": "1827mk",
+        "url": "https://github.com/1827mk"
+      },
+      "license": "MIT",
+      "keywords": [
+        "orchestrator",
+        "intent-routing",
+        "agents",
+        "workflows",
+        "pattern-learning",
+        "safety-guards",
+        "thai-english"
+      ],
+      "category": "Developer Tools"
+    }
+  ]
+}
