@@ -1,6 +1,15 @@
 ---
 name: dev-stacks:learn
 description: Manage pattern memory - list, show, save, delete, export, import patterns.
+allowed-tools:
+  - mcp__memory__search_nodes
+  - mcp__memory__open_nodes
+  - mcp__memory__create_entities
+  - mcp__memory__delete_entities
+  - mcp__memory__read_graph
+  - mcp__memory__add_observations
+  - mcp__filesystem__read_text_file
+  - mcp__filesystem__write_file
 ---
 
 # /dev-stacks:learn

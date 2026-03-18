@@ -3,6 +3,20 @@ name: tester
 description: Verification agent that validates implementation, runs tests, and ensures quality. Invoked for CAREFUL and FULL workflows.
 model: sonnet
 color: cyan
+allowed-tools:
+  - mcp__filesystem__read_text_file
+  - mcp__filesystem__search_files
+  - mcp__filesystem__directory_tree
+  - mcp__filesystem__get_file_info
+  - mcp__memory__search_nodes
+  - mcp__context7__resolve-library-id
+  - mcp__context7__query-docs
+  - mcp__web_reader__webReader
+  - WebSearch
+  - Bash
+  - Read
+  - Glob
+  - Grep
 ---
 
 # Tester Agent

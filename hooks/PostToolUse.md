@@ -236,26 +236,6 @@ Update checkpoint after each action:
 }
 ```
 
-## MCP Tools Used
-
-| Tool | Purpose |
-|------|---------|
-| `mcp__filesystem__write_file` | Write audit log, checkpoint, session log |
-| `mcp__filesystem__read_text_file` | Read current checkpoint, session log |
-| `mcp__filesystem__append_to_file` | Append to audit.jsonl (if available) |
-| `mcp__memory__create_entities` | Save patterns |
-| `mcp__memory__add_observations` | Update pattern stats |
-
-## Notes
-
-- **ALWAYS LOG** to both console and file
-- Session log: `.dev-stacks/logs/session-*.log`
-- Audit log: `.dev-stacks/logs/audit.jsonl`
-- Silent operation for most actions (console minimal, file detailed)
-- Only prompts on task success for pattern save
-- Audit log is append-only
-- Checkpoint enables undo
-
 ## Pattern Save Offer
 
 After successful task completion:
@@ -285,50 +265,31 @@ This pattern will be suggested when similar tasks are detected.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-## Checkpoint Update
-
-Update checkpoint after each action:
-
-```json
-{
-  "session_id": "abc123",
-  "timestamp": "2026-03-18T10:30:00Z",
-  "state": {
-    "phase": "BUILDING",
-    "current_task": "Add login validation",
-    "progress": 75
-  },
-  "context": {
-    "files_touched": ["src/auth/login.ts"],
-    "decisions_made": [],
-    "patterns_used": []
-  },
-  "recovery": {
-    "base_commit": "abc123",
-    "undo_stack": [
-      {
-        "timestamp": "2026-03-18T10:25:00Z",
-        "action": "Edit src/auth/login.ts",
-        "files_modified": ["src/auth/login.ts"],
-        "git_diff": "..."
-      }
-    ]
-  }
-}
+**LOG FILE:**
+```
+[2026-03-18 10:32:10] [INFO] [PostToolUse] Pattern saved to MCP Memory:
+[2026-03-18 10:32:10] [INFO]   └─ Name: Login Form Validation
+[2026-03-18 10:32:10] [INFO]   └─ Keywords: validation, form, login, email
+[2026-03-18 10:32:10] [INFO]   └─ Confidence: 1.0 (new pattern)
 ```
 
 ## MCP Tools Used
 
 | Tool | Purpose |
 |------|---------|
-| `mcp__filesystem__write_file` | Write audit log, checkpoint |
-| `mcp__filesystem__read_text_file` | Read current checkpoint |
+| `mcp__filesystem__write_file` | Write audit log, checkpoint, session log |
+| `mcp__filesystem__read_text_file` | Read current checkpoint, session log, audit.jsonl (for append) |
 | `mcp__memory__create_entities` | Save patterns |
 | `mcp__memory__add_observations` | Update pattern stats |
 
+**Note on audit.jsonl append:** Use `read_text_file` to read existing audit.jsonl, append new entry, then `write_file` to save.
+
 ## Notes
 
-- Silent operation for most actions
+- **ALWAYS LOG** to both console and file
+- Session log: `.dev-stacks/logs/session-*.log`
+- Audit log: `.dev-stacks/logs/audit.jsonl`
+- Silent operation for most actions (console minimal, file detailed)
 - Only prompts on task success for pattern save
 - Audit log is append-only
 - Checkpoint enables undo

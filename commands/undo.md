@@ -1,6 +1,10 @@
 ---
 name: dev-stacks:undo
 description: Undo changes - revert to previous state with multiple levels.
+allowed-tools:
+  - mcp__filesystem__read_text_file
+  - mcp__filesystem__write_file
+  - Bash
 ---
 
 # /dev-stacks:undo

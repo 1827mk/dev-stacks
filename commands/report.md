@@ -2,6 +2,12 @@
 name: dev-stacks:report
 description: Generate reports from Dev-Stacks data - session, dna, patterns, audit, health.
 argument-hint: "[session|dna|patterns|audit|health] [--output PATH] [--format text|json|md]"
+allowed-tools:
+  - mcp__filesystem__read_text_file
+  - mcp__filesystem__write_file
+  - mcp__filesystem__get_file_info
+  - mcp__memory__search_nodes
+  - mcp__memory__read_graph
 ---
 
 # /dev-stacks:report

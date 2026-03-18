@@ -19,7 +19,7 @@ Create and update the project's "genetic code":
 
 ## Storage
 
-**File**: `.dev-stack/dna.json`
+**File**: `.dev-stacks/dna.json`
 
 ---
 
@@ -205,7 +205,7 @@ Create and update the project's "genetic code":
          │
          ▼
 ┌─────────────────┐
-│  Save DNA       │ ← Write to .dev-stack/dna.json
+│  Save DNA       │ ← Write to .dev-stacks/dna.json
 └─────────────────┘
 ```
 
@@ -362,7 +362,7 @@ Scanning project structure...
    • LOC: ~15,000
    • Complexity: 0.45 (moderate)
 
-💾 DNA saved to .dev-stack/dna.json
+💾 DNA saved to .dev-stacks/dna.json
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
@@ -451,7 +451,7 @@ Reply with 1, 2, or 3.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ❌ Existing DNA file is corrupted
 
-File: .dev-stack/dna.json
+File: .dev-stacks/dna.json
 Error: Invalid JSON at line 42
 
 Options:
@@ -561,8 +561,8 @@ Task Success → dna-builder.update(task_info) → Save DNA
 
 ## Notes
 
-- DNA is **project-specific** (stored in `.dev-stack/`)
-- **Not committed to git** (add `.dev-stack/` to `.gitignore`)
+- DNA is **project-specific** (stored in `.dev-stacks/`)
+- **Not committed to git** (add `.dev-stacks/` to `.gitignore`)
 - Refreshed automatically when structure changes detected
 - **Learned data persists** across sessions and refreshes
 - Used to **personalize** Dev-Stacks behavior for each project

@@ -17,7 +17,7 @@ Handle all checkpoint operations:
 
 ## Storage
 
-**File**: `.dev-stack/checkpoint.json`
+**File**: `.dev-stacks/checkpoint.json`
 
 **Format**:
 ```json
@@ -73,7 +73,7 @@ Save current session state.
 1. Read current checkpoint (if exists)
 2. Update state and context
 3. Add to undo stack if changes made
-4. Write to `.dev-stack/checkpoint.json`
+4. Write to `.dev-stacks/checkpoint.json`
 
 **MCP Tools**:
 - `mcp__filesystem__read_text_file` - Read existing

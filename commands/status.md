@@ -1,6 +1,10 @@
 ---
 name: dev-stacks:status
 description: Display Dev-Stacks status - project DNA, session stats, patterns, and agents.
+allowed-tools:
+  - mcp__filesystem__read_text_file
+  - mcp__filesystem__get_file_info
+  - mcp__memory__search_nodes
 ---
 
 # /dev-stacks:status

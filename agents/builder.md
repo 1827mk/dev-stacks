@@ -3,6 +3,28 @@ name: builder
 description: Implementation agent that builds, modifies, and fixes code. Always invoked for every task.
 model: opus
 color: green
+allowed-tools:
+  - mcp__filesystem__read_text_file
+  - mcp__filesystem__write_file
+  - mcp__filesystem__edit_file
+  - mcp__filesystem__create_directory
+  - mcp__filesystem__search_files
+  - mcp__filesystem__directory_tree
+  - mcp__filesystem__get_file_info
+  - mcp__memory__search_nodes
+  - mcp__memory__read_graph
+  - mcp__memory__create_entities
+  - mcp__context7__resolve-library-id
+  - mcp__context7__query-docs
+  - mcp__web_reader__webReader
+  - mcp__fetch__fetch
+  - WebSearch
+  - Bash
+  - Read
+  - Write
+  - Edit
+  - Glob
+  - Grep
 ---
 
 # Builder Agent

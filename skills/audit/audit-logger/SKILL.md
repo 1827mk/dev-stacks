@@ -17,7 +17,7 @@ Record comprehensive audit trail:
 
 ## Storage
 
-**File**: `.dev-stack/audit.jsonl`
+**File**: `.dev-stacks/audit.jsonl`
 
 **Format**: JSON Lines (append-only)
 
@@ -138,23 +138,23 @@ Record comprehensive audit trail:
 
 ## Archive Format
 
-Archived to: `.dev-stack/archive/audit-YYYY-MM-DD.jsonl.gz`
+Archived to: `.dev-stacks/archive/audit-YYYY-MM-DD.jsonl.gz`
 
 ## Query Examples
 
 ### Count events by type
 ```bash
-cat .dev-stack/audit.jsonl | jq -r '.event_type' | sort | uniq -c
+cat .dev-stacks/audit.jsonl | jq -r '.event_type' | sort | uniq -c
 ```
 
 ### Find all guard blocks
 ```bash
-cat .dev-stack/audit.jsonl | jq 'select(.event_type == "GUARD" and .data.action == "BLOCK")'
+cat .dev-stacks/audit.jsonl | jq 'select(.event_type == "GUARD" and .data.action == "BLOCK")'
 ```
 
 ### Get session summary
 ```bash
-cat .dev-stack/audit.jsonl | jq 'select(.session_id == "abc123")' | wc -l
+cat .dev-stacks/audit.jsonl | jq 'select(.session_id == "abc123")' | wc -l
 ```
 
 ## MCP Tools Used

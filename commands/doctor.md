@@ -1,6 +1,14 @@
 ---
 name: dev-stacks:doctor
 description: Diagnose and recover Dev-Stacks - check system health, fix issues, and reset if needed.
+allowed-tools:
+  - mcp__filesystem__read_text_file
+  - mcp__filesystem__write_file
+  - mcp__filesystem__get_file_info
+  - mcp__filesystem__directory_tree
+  - mcp__filesystem__create_directory
+  - mcp__memory__search_nodes
+  - mcp__memory__read_graph
 ---
 
 # /dev-stacks:doctor

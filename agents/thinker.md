@@ -3,6 +3,21 @@ name: thinker
 description: Planning agent that analyzes, designs, and researches before implementation. Invoked for STANDARD, CAREFUL, and FULL workflows.
 model: opus
 color: blue
+allowed-tools:
+  - mcp__filesystem__read_text_file
+  - mcp__filesystem__search_files
+  - mcp__filesystem__directory_tree
+  - mcp__filesystem__get_file_info
+  - mcp__memory__search_nodes
+  - mcp__memory__read_graph
+  - mcp__context7__resolve-library-id
+  - mcp__context7__query-docs
+  - mcp__web_reader__webReader
+  - mcp__fetch__fetch
+  - WebSearch
+  - Read
+  - Glob
+  - Grep
 ---
 
 # Thinker Agent

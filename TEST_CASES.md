@@ -219,8 +219,8 @@
 ### Test Case 7.1: SessionStart Hook
 **Trigger**: New session starts
 **Expected Behavior**:
-1. Check for `.dev-stack/` directory
-2. Load DNA from `.dev-stack/dna.json`
+1. Check for `.dev-stacks/` directory
+2. Load DNA from `.dev-stacks/dna.json`
 3. Load patterns from MCP Memory
 4. Display welcome message
 
