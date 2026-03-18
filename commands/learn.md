@@ -1,5 +1,5 @@
 ---
-name: dev-stacks:learn
+name: ds:learn
 description: Manage pattern memory - list, show, save, delete, export, import patterns.
 ---
 

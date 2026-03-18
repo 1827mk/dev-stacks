@@ -1,5 +1,5 @@
 ---
-name: dev-stacks:help
+name: ds:help
 description: Display help documentation for Dev-Stacks commands and concepts.
 ---
 

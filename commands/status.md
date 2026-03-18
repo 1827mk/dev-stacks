@@ -1,5 +1,5 @@
 ---
-name: dev-stacks:status
+name: ds:status
 description: Display Dev-Stacks status - project DNA, session stats, patterns, and agents.
 ---
 

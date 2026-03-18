@@ -1,5 +1,5 @@
 ---
-name: dev-stacks:doctor
+name: ds:doctor
 description: Diagnose and recover Dev-Stacks - check system health, fix issues, and reset if needed.
 ---
 
