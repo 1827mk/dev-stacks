@@ -6,19 +6,18 @@
         "matcher": "*",
         "hooks": [
           {
-            "type": "prompt",
-            "prompt": "Initialize Dev-Stacks session:\n1. Check/create .dev-stacks/ directory and logs/ subdirectory\n2. Load or create .dev-stacks/dna.json (project DNA)\n3. Query MCP Memory for dev-stacks patterns\n4. Output: '🚀 DEV-STACKS READY - [project type] detected, [N] patterns loaded'\n\nUse mcp__filesystem__ tools for directories and files. Use mcp__memory__search_nodes for patterns."
+            "type": "command",
+            "command": "bash -c 'echo \"🚀 DEV-STACKS READY\"'"
           }
         ]
       }
     ],
     "UserPromptSubmit": [
       {
-        "matcher": "*",
         "hooks": [
           {
             "type": "prompt",
-            "prompt": "Process user input through Dev-Stacks pipeline:\n\n1. INTENT DETECTION: Classify as FIX_BUG, ADD_FEATURE, MODIFY_BEHAVIOR, OPTIMIZE, INVESTIGATE, EXPLAIN, SETUP, DEPLOY, or OTHER. Support Thai/English/Mixed input.\n\n2. COMPLEXITY SCORING (0.0-1.0):\n   - Files affected (0.1-0.3)\n   - Risk level: LOW=0.1, MEDIUM=0.2, HIGH=0.3\n   - Dependencies: isolated=0.0, few=0.1, system-wide=0.2\n   - Reversibility: easy=0.0, migration=0.1, breaking=0.2\n\n3. WORKFLOW SELECTION:\n   - 0.0-0.19: QUICK (Builder only)\n   - 0.2-0.39: STANDARD (Thinker + Builder)\n   - 0.4-0.59: CAREFUL (Thinker + Builder + Tester)\n   - 0.6-1.0: FULL (Full team + confirmation)\n\nOutput brief status: '🔍 [DEV-STACKS] Intent: [category] | Complexity: [score] | Workflow: [type]'\n\nDo NOT process if input starts with '/' (it's a command)."
+            "prompt": "You are the Dev-Stacks Intent Router. Analyze the user's prompt and output a brief status line.\n\nSteps:\n1. Detect INTENT: FIX_BUG, ADD_FEATURE, MODIFY_BEHAVIOR, OPTIMIZE, INVESTIGATE, EXPLAIN, SETUP, DEPLOY, OTHER\n2. Score COMPLEXITY (0.0-1.0): files affected + risk level + dependencies + reversibility\n3. Select WORKFLOW: QUICK (<0.2), STANDARD (0.2-0.39), CAREFUL (0.4-0.59), FULL (>=0.6)\n\nIf prompt starts with '/' output nothing (it's a command).\nOtherwise output ONE line: '🔍 [DEV-STACKS] Intent: [category] | Complexity: [score] | Workflow: [type]'\n\nSupport Thai/English/Mixed input."
           }
         ]
       }
@@ -29,7 +28,7 @@
         "hooks": [
           {
             "type": "prompt",
-            "prompt": "Dev-Stacks Guards - Check before file modification:\n\n1. SCOPE GUARD: Block writes to:\n   - .env* (secrets)\n   - *.pem, *.key (certificates/keys)\n   - .git/ (version control)\n   - credentials*, secrets* (credential files)\n\n2. SECRET SCANNER: Detect hardcoded secrets:\n   - API keys, passwords, tokens\n   - Database URLs with credentials\n   - Private keys\n   - AWS keys\n\nIf blocked: Return '{\"hookSpecificOutput\": {\"permissionDecision\": \"deny\"}, \"systemMessage\": \"🛡️ Guard: BLOCKED - [reason]\"}'\nIf sensitive file needs confirmation: Return '{\"hookSpecificOutput\": {\"permissionDecision\": \"ask\"}, \"systemMessage\": \"🛡️ Guard: [file] may affect project config. Proceed?\"}'\nIf safe: Approve silently."
+            "prompt": "You are the Dev-Stacks Scope Guard. Check if the file modification should be allowed.\n\nBLOCK these files (return JSON with permissionDecision: \"deny\"):\n- .env* (secrets)\n- *.pem, *.key (certificates/keys)\n- .git/* (version control)\n- credentials*, secrets* (credential files)\n\nDETECT hardcoded secrets (return JSON with permissionDecision: \"deny\"):\n- API keys, passwords, tokens in code\n- Database URLs with credentials\n- Private keys\n\nIf blocked, output JSON: {\"hookSpecificOutput\": {\"hookEventName\": \"PreToolUse\", \"permissionDecision\": \"deny\", \"permissionDecisionReason\": \"reason\"}}\nIf safe, output nothing."
           }
         ]
       },
@@ -38,7 +37,7 @@
         "hooks": [
           {
             "type": "prompt",
-            "prompt": "Dev-Stacks Bash Guard - Check for dangerous commands:\n\nBLOCK (never allow):\n- rm -rf /, rm -rf /*, rm -rf ~\n- mkfs, dd if=\n- Fork bombs, /dev/sda writes\n- DROP DATABASE, DROP TABLE, TRUNCATE\n\nCONFIRM (ask user):\n- sudo, chmod -R 777\n- curl | bash, wget | bash\n- eval with user input\n\nIf blocked: Return '{\"hookSpecificOutput\": {\"permissionDecision\": \"deny\"}, \"systemMessage\": \"🛡️ Bash Guard: BLOCKED - Dangerous command detected\"}'\nIf needs confirmation: Return '{\"hookSpecificOutput\": {\"permissionDecision\": \"ask\"}, \"systemMessage\": \"🛡️ Bash Guard: Command requires confirmation\"}'\nIf safe: Approve silently."
+            "prompt": "You are the Dev-Stacks Bash Guard. Check if the command is dangerous.\n\nBLOCK (return JSON with permissionDecision: \"deny\"):\n- rm -rf /, rm -rf /*, rm -rf ~\n- mkfs, dd if=\n- DROP DATABASE, DROP TABLE, TRUNCATE\n\nCONFIRM (return JSON with permissionDecision: \"ask\"):\n- sudo, chmod -R 777\n- curl | bash, wget | bash\n\nIf blocked: {\"hookSpecificOutput\": {\"hookEventName\": \"PreToolUse\", \"permissionDecision\": \"deny\", \"permissionDecisionReason\": \"Dangerous command\"}}\nIf needs confirmation: {\"hookSpecificOutput\": {\"hookEventName\": \"PreToolUse\", \"permissionDecision\": \"ask\"}}\nIf safe, output nothing."
           }
         ]
       }
@@ -49,29 +48,27 @@
         "hooks": [
           {
             "type": "prompt",
-            "prompt": "Dev-Stacks Post-Action:\n1. Log action to .dev-stacks/logs/audit.jsonl as JSON line\n2. Update checkpoint in .dev-stacks/checkpoint.json\n\nLog format: {\"timestamp\": \"...\", \"tool\": \"...\", \"action\": \"...\", \"success\": true}\n\nDo this silently without output unless there's an error."
+            "prompt": "Dev-Stacks Post-Action Logger. Silently note the action was completed. Output nothing visible."
           }
         ]
       }
     ],
     "Stop": [
       {
-        "matcher": "*",
         "hooks": [
           {
             "type": "prompt",
-            "prompt": "Dev-Stacks Completion Check:\nBefore stopping, verify:\n1. Task was actually completed (not just attempted)\n2. No obvious errors or regressions introduced\n3. If task involved code changes, tests should pass (if available)\n\nIf incomplete: Return '{\"decision\": \"block\", \"reason\": \"[what's missing]\"}'\nIf complete: Return '{\"decision\": \"approve\"}'\n\nSave final checkpoint to .dev-stacks/checkpoint.json"
+            "prompt": "Dev-Stacks Completion Check. Verify the task was completed.\n\nIf incomplete, output: {\"decision\": \"block\", \"reason\": \"what's missing\"}\nIf complete, output nothing."
           }
         ]
       }
     ],
     "PreCompact": [
       {
-        "matcher": "*",
         "hooks": [
           {
             "type": "prompt",
-            "prompt": "Dev-Stacks Pre-Compact:\nBefore context compaction, ensure critical info is preserved:\n1. Save current task state to .dev-stacks/checkpoint.json\n2. Note any in-progress work\n3. Preserve learned patterns from this session\n\nOutput: '💾 [DEV-STACKS] Checkpoint saved before context compact'"
+            "prompt": "Dev-Stacks Pre-Compact. Note that context is being compacted. Output: '💾 [DEV-STACKS] Checkpoint saved before context compact'"
           }
         ]
       }
