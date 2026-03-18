@@ -1,5 +1,5 @@
 ---
-name: ds:undo
+name: dev-stacks:undo
 description: Undo changes - revert to previous state with multiple levels.
 ---
 
