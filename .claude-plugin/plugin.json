@@ -7,31 +7,5 @@
     "url": "https://github.com/1827mk/dev-stacks"
   },
   "license": "MIT",
-  "keywords": ["orchestrator", "intent-routing", "agents", "workflows", "pattern-learning", "safety-guards", "thai-english"],
-  "hooks": {
-    "SessionStart": {
-      "type": "prompt",
-      "path": "${CLAUDE_PLUGIN_ROOT}/hooks/SessionStart.md"
-    },
-    "UserPromptSubmit": {
-      "type": "prompt",
-      "path": "${CLAUDE_PLUGIN_ROOT}/hooks/UserPromptSubmit.md"
-    },
-    "PreToolUse": {
-      "type": "prompt",
-      "path": "${CLAUDE_PLUGIN_ROOT}/hooks/PreToolUse.md"
-    },
-    "PostToolUse": {
-      "type": "prompt",
-      "path": "${CLAUDE_PLUGIN_ROOT}/hooks/PostToolUse.md"
-    },
-    "Stop": {
-      "type": "prompt",
-      "path": "${CLAUDE_PLUGIN_ROOT}/hooks/Stop.md"
-    },
-    "PreCompact": {
-      "type": "prompt",
-      "path": "${CLAUDE_PLUGIN_ROOT}/hooks/PreCompact.md"
-    }
-  }
+  "keywords": ["orchestrator", "intent-routing", "agents", "workflows", "pattern-learning", "safety-guards", "thai-english"]
 }
