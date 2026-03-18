@@ -106,7 +106,7 @@ Load session state from checkpoint.
 Revert to previous state.
 
 **When called**:
-- `/ds:undo` command
+- `/dev-stacks:undo` command
 - Explicit undo request
 
 **Process**:
@@ -134,7 +134,7 @@ Revert to previous state.
 Restore undone changes.
 
 **When called**:
-- `/ds:redo` command
+- `/dev-stacks:redo` command
 
 **Process**:
 1. Pop from redo_stack

@@ -1,7 +1,8 @@
 ---
 name: builder
 description: Implementation agent that builds, modifies, and fixes code. Always invoked for every task.
-model: claude-sonnet-4-6
+model: opus
+color: green
 ---
 
 # Builder Agent

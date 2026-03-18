@@ -3,14 +3,14 @@ name: dev-stacks:help
 description: Display help documentation for Dev-Stacks commands and concepts.
 ---
 
-# /ds:help
+# /dev-stacks:help
 
 Display help for Dev-Stacks.
 
 ## Usage
 
 ```
-/ds:help [topic]
+/dev-stacks:help [topic]
 ```
 
 ## Topics
@@ -30,17 +30,17 @@ Display help for Dev-Stacks.
 │ 📖 DEV-STACKS HELP                                       │
 ├─────────────────────────────────────────────────────────┤
 │ Commands:                                                │
-│   /ds:status   - View system status                     │
-│   /ds:undo     - Undo changes                           │
-│   /ds:learn    - Manage patterns                        │
-│   /ds:doctor   - Diagnose and recover                   │
-│   /ds:help     - This help message                      │
+│   /dev-stacks:status   - View system status                     │
+│   /dev-stacks:undo     - Undo changes                           │
+│   /dev-stacks:learn    - Manage patterns                        │
+│   /dev-stacks:doctor   - Diagnose and recover                   │
+│   /dev-stacks:help     - This help message                      │
 ├─────────────────────────────────────────────────────────┤
 │ Topics:                                                  │
-│   /ds:help workflows  - Workflow explanations           │
-│   /ds:help agents     - Agent descriptions              │
-│   /ds:help research   - Research capability             │
-│   /ds:help examples   - Usage examples                  │
+│   /dev-stacks:help workflows  - Workflow explanations           │
+│   /dev-stacks:help agents     - Agent descriptions              │
+│   /dev-stacks:help research   - Research capability             │
+│   /dev-stacks:help examples   - Usage examples                  │
 ├─────────────────────────────────────────────────────────┤
 │ Just describe what you want to do in natural language!  │
 │ Dev-Stacks will understand and help you.                │

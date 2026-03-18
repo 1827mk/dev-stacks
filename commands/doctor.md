@@ -3,14 +3,14 @@ name: dev-stacks:doctor
 description: Diagnose and recover Dev-Stacks - check system health, fix issues, and reset if needed.
 ---
 
-# /ds:doctor
+# /dev-stacks:doctor
 
 Diagnose and recover Dev-Stacks system.
 
 ## Usage
 
 ```
-/ds:doctor [action] [component] [--confirm]
+/dev-stacks:doctor [action] [component] [--confirm]
 ```
 
 ## Actions
@@ -28,7 +28,7 @@ Diagnose and recover Dev-Stacks system.
 Check system health.
 
 ```
-/ds:doctor
+/dev-stacks:doctor
 ```
 
 ### Output
@@ -82,7 +82,7 @@ Status: ✅ HEALTHY
 Fix detected issues automatically.
 
 ```
-/ds:doctor fix
+/dev-stacks:doctor fix
 ```
 
 ### Output
@@ -113,7 +113,7 @@ All issues resolved.
 Reset components (destructive - requires --confirm).
 
 ```
-/ds:doctor reset dna --confirm
+/dev-stacks:doctor reset dna --confirm
 ```
 
 ### Components

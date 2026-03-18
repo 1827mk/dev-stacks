@@ -172,4 +172,4 @@ confidence = success_count / (success_count + failure_count)
 
 - Invoked after successful task completion
 - Invoked during intent routing for pattern matching
-- Invoked by `/ds:learn` command
+- Invoked by `/dev-stacks:learn` command

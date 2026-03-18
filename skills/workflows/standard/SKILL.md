@@ -309,7 +309,7 @@ Phase: BUILDING
 Task: Add email validation
 Progress: 50%
 
-Undo available: /ds:undo
+Undo available: /dev-stacks:undo
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
@@ -443,7 +443,7 @@ Phase: BUILDING
 Task: Add email validation
 Progress: 50%
 
-Undo available: /ds:undo
+Undo available: /dev-stacks:undo
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 

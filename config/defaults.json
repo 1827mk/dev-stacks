@@ -7,9 +7,9 @@
     "full": { "minComplexity": 0.6, "maxComplexity": 1.0 }
   },
   "agents": {
-    "thinker": { "model": "claude-sonnet-4-6", "enabled": true },
-    "builder": { "model": "claude-sonnet-4-6", "enabled": true },
-    "tester": { "model": "claude-sonnet-4-6", "enabled": true }
+    "thinker": { "model": "opus", "enabled": true },
+    "builder": { "model": "opus", "enabled": true },
+    "tester": { "model": "sonnet", "enabled": true }
   },
   "guards": {
     "enabled": true,

@@ -1,7 +1,8 @@
 ---
 name: tester
 description: Verification agent that validates implementation, runs tests, and ensures quality. Invoked for CAREFUL and FULL workflows.
-model: claude-sonnet-4-6
+model: sonnet
+color: cyan
 ---
 
 # Tester Agent

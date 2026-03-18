@@ -228,7 +228,7 @@ Rolling back:
 
 Rollback complete.
 
-Undo with: /ds:undo
+Undo with: /dev-stacks:undo
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 

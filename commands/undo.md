@@ -3,14 +3,14 @@ name: dev-stacks:undo
 description: Undo changes - revert to previous state with multiple levels.
 ---
 
-# /ds:undo
+# /dev-stacks:undo
 
 Undo changes made during the session.
 
 ## Usage
 
 ```
-/ds:undo [level]
+/dev-stacks:undo [level]
 ```
 
 ## Levels
@@ -62,7 +62,7 @@ Current state:
 
 ### Example 1: Undo Last Action
 ```
-/ds:undo
+/dev-stacks:undo
 
 ⏪ UNDO PREVIEW
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -83,7 +83,7 @@ Proceed with undo? [Y/n]
 
 ### Example 2: Undo Phase
 ```
-/ds:undo phase
+/dev-stacks:undo phase
 
 ⏪ UNDO PREVIEW
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -103,7 +103,7 @@ Proceed? [Y/n]
 
 ### Example 3: Restore Checkpoint
 ```
-/ds:undo checkpoint
+/dev-stacks:undo checkpoint
 
 ⏪ UNDO PREVIEW
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -126,7 +126,7 @@ Proceed? [Y/n]
 
 ### Example 4: Git Reset
 ```
-/ds:undo commit
+/dev-stacks:undo commit
 
 ⏪ UNDO PREVIEW
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -170,7 +170,7 @@ No changes made.
 
 After undo, you can redo:
 ```
-/ds:redo
+/dev-stacks:redo
 
 ⏪ REDO COMPLETE
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

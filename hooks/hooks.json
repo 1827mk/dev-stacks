@@ -19,6 +19,10 @@
     "Stop": {
       "type": "prompt",
       "path": "${CLAUDE_PLUGIN_ROOT}/hooks/Stop.md"
+    },
+    "PreCompact": {
+      "type": "prompt",
+      "path": "${CLAUDE_PLUGIN_ROOT}/hooks/PreCompact.md"
     }
   }
 }

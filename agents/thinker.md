@@ -1,7 +1,8 @@
 ---
 name: thinker
 description: Planning agent that analyzes, designs, and researches before implementation. Invoked for STANDARD, CAREFUL, and FULL workflows.
-model: claude-sonnet-4-6
+model: opus
+color: blue
 ---
 
 # Thinker Agent

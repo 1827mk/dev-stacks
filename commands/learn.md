@@ -3,14 +3,14 @@ name: dev-stacks:learn
 description: Manage pattern memory - list, show, save, delete, export, import patterns.
 ---
 
-# /ds:learn
+# /dev-stacks:learn
 
 Manage pattern memory.
 
 ## Usage
 
 ```
-/ds:learn [action] [pattern]
+/dev-stacks:learn [action] [pattern]
 ```
 
 ## Actions
@@ -31,7 +31,7 @@ Manage pattern memory.
 List all learned patterns.
 
 ```
-/ds:learn list
+/dev-stacks:learn list
 ```
 
 ### Output
@@ -56,7 +56,7 @@ Total: 3 patterns
 Show details of a specific pattern.
 
 ```
-/ds:learn show "Form Validation"
+/dev-stacks:learn show "Form Validation"
 ```
 
 ### Output
@@ -98,7 +98,7 @@ Statistics:
 Manually save current task as a pattern.
 
 ```
-/ds:learn save
+/dev-stacks:learn save
 ```
 
 ### Output
@@ -136,7 +136,7 @@ This pattern will be suggested for similar tasks.
 Delete a pattern.
 
 ```
-/ds:learn forget "Pattern Name"
+/dev-stacks:learn forget "Pattern Name"
 ```
 
 ### Output
@@ -166,7 +166,7 @@ Are you sure you want to delete this pattern? [Y/n]
 Export patterns to JSON file.
 
 ```
-/ds:learn export [filename]
+/dev-stacks:learn export [filename]
 ```
 
 ### Output
@@ -179,7 +179,7 @@ Exporting 3 patterns...
 Saved to: patterns-export.json
 
 You can import these patterns in another project
-using: /ds:learn import patterns-export.json
+using: /dev-stacks:learn import patterns-export.json
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
@@ -190,7 +190,7 @@ using: /ds:learn import patterns-export.json
 Import patterns from JSON file.
 
 ```
-/ds:learn import patterns-export.json
+/dev-stacks:learn import patterns-export.json
 ```
 
 ### Output

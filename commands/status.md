@@ -3,14 +3,14 @@ name: dev-stacks:status
 description: Display Dev-Stacks status - project DNA, session stats, patterns, and agents.
 ---
 
-# /ds:status
+# /dev-stacks:status
 
 Display comprehensive status of Dev-Stacks.
 
 ## Usage
 
 ```
-/ds:status [--dna] [--patterns] [--history]
+/dev-stacks:status [--dna] [--patterns] [--history]
 ```
 
 ## Arguments
@@ -42,8 +42,8 @@ Display comprehensive status of Dev-Stacks.
 │   • Patterns used: [count]                              │
 ├─────────────────────────────────────────────────────────┤
 │ 👥 Available Agents                                      │
-│   🧠 Thinker (sonnet) - Ready                            │
-│   🛠️ Builder (sonnet) - Ready                           │
+│   🧠 Thinker (opus) - Ready                             │
+│   🛠️ Builder (opus) - Ready                            │
 │   ✅ Tester (sonnet) - Ready                             │
 └─────────────────────────────────────────────────────────┘
 ```
@@ -75,7 +75,7 @@ Display comprehensive status of Dev-Stacks.
 ## Example
 
 ```
-/ds:status
+/dev-stacks:status
 
 ┌─────────────────────────────────────────────────────────┐
 │ 📊 DEV-STACKS STATUS                                     │
@@ -95,8 +95,8 @@ Display comprehensive status of Dev-Stacks.
 │   • Patterns used: 1                                    │
 ├─────────────────────────────────────────────────────────┤
 │ 👥 Available Agents                                      │
-│   🧠 Thinker (sonnet) - Ready                            │
-│   🛠️ Builder (sonnet) - Ready                           │
+│   🧠 Thinker (opus) - Ready                             │
+│   🛠️ Builder (opus) - Ready                            │
 │   ✅ Tester (sonnet) - Ready                             │
 └─────────────────────────────────────────────────────────┘
 ```
@@ -107,7 +107,7 @@ Display comprehensive status of Dev-Stacks.
 ```
 📊 DEV-STACKS STATUS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-⚠️ No DNA found. Run /ds:doctor to initialize.
+⚠️ No DNA found. Run /dev-stacks:doctor to initialize.
 ```
 
 ### No Patterns Found

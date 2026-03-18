@@ -231,7 +231,7 @@ Create and update the project's "genetic code":
 **Trigger**:
 - DNA age > 7 days
 - Git branch change detected
-- User request: `/ds:doctor --refresh-dna`
+- User request: `/dev-stacks:doctor --refresh-dna`
 - Large structural changes detected
 
 **Process**:
@@ -396,7 +396,7 @@ Changes detected:
    • New dependencies: stripe
    • Branch changed: main → feature/auth
 
-Run /ds:doctor --refresh-dna to update.
+Run /dev-stacks:doctor --refresh-dna to update.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
@@ -546,9 +546,9 @@ SessionStart → Check DNA exists → If not, invoke dna-builder
 ### Manual (Command)
 
 ```
-/ds:doctor --refresh-dna    # Full refresh
-/ds:doctor --update-dna     # Update learned only
-/ds:status --dna            # View DNA
+/dev-stacks:doctor --refresh-dna    # Full refresh
+/dev-stacks:doctor --update-dna     # Update learned only
+/dev-stacks:status --dna            # View DNA
 ```
 
 ### Programmatic (After Task Success)
