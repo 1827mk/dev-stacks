@@ -17,38 +17,7 @@
         "hooks": [
           {
             "type": "prompt",
-            "prompt": "You are the Dev-Stacks Intent Router. Analyze the user's prompt and output a brief status line.\n\nSteps:\n1. Detect INTENT: FIX_BUG, ADD_FEATURE, MODIFY_BEHAVIOR, OPTIMIZE, INVESTIGATE, EXPLAIN, SETUP, DEPLOY, OTHER\n2. Score COMPLEXITY (0.0-1.0): files affected + risk level + dependencies + reversibility\n3. Select WORKFLOW: QUICK (<0.2), STANDARD (0.2-0.39), CAREFUL (0.4-0.59), FULL (>=0.6)\n\nIf prompt starts with '/' output nothing (it's a command).\nOtherwise output ONE line: '🔍 [DEV-STACKS] Intent: [category] | Complexity: [score] | Workflow: [type]'\n\nSupport Thai/English/Mixed input."
-          }
-        ]
-      }
-    ],
-    "PreToolUse": [
-      {
-        "matcher": "Write|Edit",
-        "hooks": [
-          {
-            "type": "prompt",
-            "prompt": "You are the Dev-Stacks Scope Guard. Check if the file modification should be allowed.\n\nBLOCK these files (return JSON with permissionDecision: \"deny\"):\n- .env* (secrets)\n- *.pem, *.key (certificates/keys)\n- .git/* (version control)\n- credentials*, secrets* (credential files)\n\nDETECT hardcoded secrets (return JSON with permissionDecision: \"deny\"):\n- API keys, passwords, tokens in code\n- Database URLs with credentials\n- Private keys\n\nIf blocked, output JSON: {\"hookSpecificOutput\": {\"hookEventName\": \"PreToolUse\", \"permissionDecision\": \"deny\", \"permissionDecisionReason\": \"reason\"}}\nIf safe, output nothing."
-          }
-        ]
-      },
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "prompt",
-            "prompt": "You are the Dev-Stacks Bash Guard. Check if the command is dangerous.\n\nBLOCK (return JSON with permissionDecision: \"deny\"):\n- rm -rf /, rm -rf /*, rm -rf ~\n- mkfs, dd if=\n- DROP DATABASE, DROP TABLE, TRUNCATE\n\nCONFIRM (return JSON with permissionDecision: \"ask\"):\n- sudo, chmod -R 777\n- curl | bash, wget | bash\n\nIf blocked: {\"hookSpecificOutput\": {\"hookEventName\": \"PreToolUse\", \"permissionDecision\": \"deny\", \"permissionDecisionReason\": \"Dangerous command\"}}\nIf needs confirmation: {\"hookSpecificOutput\": {\"hookEventName\": \"PreToolUse\", \"permissionDecision\": \"ask\"}}\nIf safe, output nothing."
-          }
-        ]
-      }
-    ],
-    "PostToolUse": [
-      {
-        "matcher": "Write|Edit|Bash",
-        "hooks": [
-          {
-            "type": "prompt",
-            "prompt": "Dev-Stacks Post-Action Logger. Silently note the action was completed. Output nothing visible."
+            "prompt": "You are Dev-Stacks Intent Router. Briefly analyze the user's prompt. Output ONE short line showing: Intent category and complexity score. If the prompt starts with '/' output nothing. Example output: '🔍 Intent: FIX_BUG | Complexity: 0.15'"
           }
         ]
       }
@@ -58,7 +27,7 @@
         "hooks": [
           {
             "type": "prompt",
-            "prompt": "Dev-Stacks Completion Check. Verify the task was completed.\n\nIf incomplete, output: {\"decision\": \"block\", \"reason\": \"what's missing\"}\nIf complete, output nothing."
+            "prompt": "You are Dev-Stacks Completion Checker. Briefly verify the task was completed. If complete, output nothing. If incomplete, briefly state what is missing in one sentence."
           }
         ]
       }
@@ -68,7 +37,7 @@
         "hooks": [
           {
             "type": "prompt",
-            "prompt": "Dev-Stacks Pre-Compact. Note that context is being compacted. Output: '💾 [DEV-STACKS] Checkpoint saved before context compact'"
+            "prompt": "Note: Context compaction is occurring. Output nothing."
           }
         ]
       }
