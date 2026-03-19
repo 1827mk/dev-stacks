@@ -64,9 +64,15 @@ elif (( $(echo "$COMPLEXITY >= 0.6" | bc -l) )); then
     WORKFLOW="Full"
 fi
 
-# Output routing info (stdout is added as context)
+# Output routing info + orchestration instruction
 cat << ROUTING
 🔍 [DEV-STACKS] Intent: $INTENT | Complexity: $COMPLEXITY | Workflow: $WORKFLOW
+
+📋 ORCHESTRATION INSTRUCTION:
+Invoke the orchestrator skill to manage this task:
+  • Use Skill tool with skill="dev-stacks:orchestrator"
+  • Orchestrator will handle state machine and agent dispatch
+  • Do NOT implement directly - let the team handle it
 ROUTING
 
 exit 0
