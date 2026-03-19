@@ -1,7 +1,6 @@
 #!/bin/bash
 # Test config validation
 
-set -e
 cd "$(dirname "$0")/.."
 source ./tests/lib/assertions.sh
 
@@ -17,8 +16,13 @@ it "config file exists"
 assert_file_exists "$CONFIG_FILE"
 
 it "config is valid JSON"
-jq . "$CONFIG_FILE" > /dev/null 2>&1
-assert_success $?
+if jq . "$CONFIG_FILE" > /dev/null 2>&1; then
+    echo -e "    \033[0;32m✓\033[0m valid JSON"
+    ((tests_passed++))
+else
+    echo -e "    \033[0;31m✗ invalid JSON\033[0m"
+    ((tests_failed++))
+fi
 
 # Test 2: Required keys
 describe "Required Keys"

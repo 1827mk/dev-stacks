@@ -1,7 +1,6 @@
 #!/bin/bash
 # Test hook output parsing
 
-set -e
 cd "$(dirname "$0")/.."
 source ./tests/lib/assertions.sh
 
@@ -25,7 +24,17 @@ it "scores typo fix as low complexity"
 result=$(echo '{"user_prompt":"แก้ typo"}' | bash ./hooks/user-prompt-submit.sh 2>/dev/null || true)
 assert_contains "$result" "Complexity: 0.1"
 
-# Test 3: Orchestration instruction
+# Test 3: Intelligence Layer
+describe "Intelligence Layer"
+it "includes intelligence analysis"
+result=$(echo '{"user_prompt":"สร้าง login page"}' | bash ./hooks/user-prompt-submit.sh 2>/dev/null || true)
+assert_contains "$result" "INTELLIGENCE"
+
+it "recommends frontend-design for UI task"
+result=$(echo '{"user_prompt":"สร้าง login page"}' | bash ./hooks/user-prompt-submit.sh 2>/dev/null || true)
+assert_contains "$result" "frontend"
+
+# Test 4: Orchestration instruction
 describe "Orchestration Instruction"
 it "includes orchestrator invocation"
 result=$(echo '{"user_prompt":"test task"}' | bash ./hooks/user-prompt-submit.sh 2>/dev/null || true)

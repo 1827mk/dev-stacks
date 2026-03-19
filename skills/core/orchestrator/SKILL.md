@@ -50,6 +50,28 @@ Read: .dev-stacks/state.json
 ```
 
 If not exists, create:
+
+### Step 2.5: Tool Recommendation
+
+Read the tool registry to recommend appropriate tools:
+```bash
+Read: .dev-stacks/registry.json
+```
+
+Match task keywords to available tools:
+```
+Task Analysis → Keyword Extraction → Tool Matching
+
+Example:
+  Task: "สร้าง login page ใหม่"
+  Keywords: login, page, create, UI
+  Matched Tools:
+    - frontend-design (page, UI)
+    - context7 (docs for React/forms)
+    - chrome-devtools (browser testing)
+```
+
+Add recommended tools to agent prompt when dispatching
 ```json
 {
   "version": "1.0.0",

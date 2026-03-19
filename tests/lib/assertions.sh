@@ -42,6 +42,16 @@ assert_file_exists() {
   fi
 }
 
+assert_success() {
+  if [[ "$1" -eq 0 ]]; then
+    echo -e "    ${GREEN}✓${NC} success (exit code 0)"
+    ((tests_passed++))
+  else
+    echo -e "    ${RED}✗ failed (exit code $1)${NC}"
+    ((tests_failed++))
+  fi
+}
+
 assert_json_has_key() {
   if jq -e "$2" "$1" > /dev/null 2>&1; then
     echo -e "    ${GREEN}✓${NC} has key $2"

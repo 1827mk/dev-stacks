@@ -64,9 +64,59 @@ elif (( $(echo "$COMPLEXITY >= 0.6" | bc -l) )); then
     WORKFLOW="Full"
 fi
 
-# Output routing info + orchestration instruction
+# Intelligence Layer: Task Analysis
+TASK_TYPE="unknown"
+DOMAIN="general"
+CONFIDENCE="0.5"
+
+# Detect task type
+if echo "$USER_PROMPT" | grep -qiE 'UI|component|page|frontend|หน้า|ปุ่ม|form'; then
+    TASK_TYPE="frontend"
+    DOMAIN="UI/UX"
+    CONFIDENCE="0.85"
+elif echo "$USER_PROMPT" | grep -qiE 'API|endpoint|backend|server|ฐานข้อมูล|database'; then
+    TASK_TYPE="backend"
+    DOMAIN="Backend/API"
+    CONFIDENCE="0.80"
+elif echo "$USER_PROMPT" | grep -qiE 'test|ทดสอบ|verify|check'; then
+    TASK_TYPE="testing"
+    DOMAIN="QA/Testing"
+    CONFIDENCE="0.75"
+elif echo "$USER_PROMPT" | grep -qiE 'bug|error|แก้|fix|ซ่อม'; then
+    TASK_TYPE="debugging"
+    DOMAIN="Debugging"
+    CONFIDENCE="0.80"
+fi
+
+# Recommend primary approach
+PRIMARY_APPROACH="standard"
+if [[ "$TASK_TYPE" == "frontend" ]]; then
+    PRIMARY_APPROACH="frontend-design skill"
+elif [[ "$TASK_TYPE" == "debugging" ]]; then
+    PRIMARY_APPROACH="systematic-debugging skill"
+elif [[ "$TASK_TYPE" == "testing" ]]; then
+    PRIMARY_APPROACH="test-driven-development skill"
+fi
+
+# Output routing info + Intelligence Layer + orchestration instruction
 cat << ROUTING
 🔍 [DEV-STACKS] Intent: $INTENT | Complexity: $COMPLEXITY | Workflow: $WORKFLOW
+
+🧠 INTELLIGENCE LAYER
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Analysis:
+  • Task type: $TASK_TYPE
+  • Domain: $DOMAIN
+  • Complexity factors: $([[ $COMPLEXITY > 0.5 ]] && echo "Multiple components, careful planning needed" || echo "Straightforward task")
+
+Recommended Approach:
+  • Primary: $PRIMARY_APPROACH
+  • Confidence: $CONFIDENCE
+
+Available Tools:
+  • MCP: context7, web_reader, WebSearch, serena, memory
+  • Skills: frontend-design, systematic-debugging, TDD, brainstorming
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 📋 ORCHESTRATION INSTRUCTION:
 Invoke the orchestrator skill to manage this task:

@@ -232,3 +232,99 @@ Task complete with minor notes.
 - [ ] Edge cases handled
 - [ ] Error handling present
 - [ ] Code quality acceptable
+
+---
+
+## Quality Gates
+
+Before reporting PASSED, verify all 3 gates:
+
+### Gate 1: Code Quality
+
+Run these checks:
+
+```bash
+# TypeScript/JavaScript
+npm run lint
+npm run typecheck
+
+# Python
+ruff check .
+mypy .
+
+# Go
+golangci-lint run
+
+# Generic
+# Check for: console.log, debugger, TODO, FIXME
+```
+
+- [ ] No lint errors
+- [ ] No type errors
+- [ ] No debug code left behind
+- [ ] Follows project patterns
+
+**Pass Gate 1 → Proceed to Gate 2**
+
+---
+
+### Gate 2: Test Coverage
+
+Run tests:
+
+```bash
+# JavaScript/TypeScript
+npm test
+
+# Python
+pytest
+
+# Go
+go test ./...
+
+# Check coverage
+npm test -- --coverage
+pytest --cov
+```
+
+- [ ] All existing tests pass
+- [ ] New code has tests (if applicable)
+- [ ] Edge cases tested
+- [ ] No regressions
+
+**Pass Gate 2 → Proceed to Gate 3**
+
+---
+
+### Gate 3: Production Ready
+
+Check these items:
+
+- [ ] **No hardcoded secrets** - No API keys, passwords, tokens in code
+- [ ] **Error handling complete** - No unhandled promises, exceptions
+- [ ] **Documentation updated** - README, comments if needed
+- [ ] **Environment variables** - Added to .env.example if new
+- [ ] **Breaking changes** - Documented if any
+
+**Pass Gate 3 → Report PASSED**
+
+---
+
+### Gate Failure Protocol
+
+If any gate fails:
+
+1. **Document the issue** in your output
+2. **Suggest a fix** - What needs to be done
+3. **Report status**: `⚠️ PASSED WITH NOTES` or `❌ FAILED`
+
+Example:
+```
+Gate 1: Code Quality
+- Lint: ✅ Pass
+- TypeCheck: ❌ Failed
+  - src/auth.ts:42 - Type 'string' not assignable to 'number'
+- Suggestion: Change userId type to string
+
+Result: ⚠️ PASSED WITH NOTES
+```
