@@ -2,18 +2,18 @@
 
 ## Quick Start
 
-### Option 1: Clone to Claude Plugins Directory
-
-```bash
-cd ~/.claude/plugins/
-git clone https://github.com/1827mk/dev-stacks.git
-```
-
-### Option 2: Marketplace
+### Option 1: Marketplace (Recommended)
 
 ```bash
 claude /plugin marketplace add https://github.com/1827mk/dev-stacks
 claude /plugin install dev-stacks
+```
+
+### Option 2: Clone to Claude Plugins Directory
+
+```bash
+cd ~/.claude/plugins/
+git clone https://github.com/1827mk/dev-stacks.git
 ```
 
 ### Option 3: Local Development
@@ -69,13 +69,13 @@ Workflow: standard | Invoke: /dev-stacks:run
 | `/dev-stacks:implement` | Implementation only |
 | `/dev-stacks:review` | Review only |
 
-## Post-Installation
-
-No setup needed. The hook automatically activates on every prompt.
-
 ## Updating
 
 ```bash
+# Marketplace
+claude /plugin update dev-stacks
+
+# Or manual
 cd ~/.claude/plugins/dev-stacks
 git pull origin main
 ```
@@ -83,6 +83,10 @@ git pull origin main
 ## Uninstallation
 
 ```bash
+# Marketplace
+claude /plugin uninstall dev-stacks
+
+# Or manual
 rm -rf ~/.claude/plugins/dev-stacks
 ```
 
