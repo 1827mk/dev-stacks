@@ -1,0 +1,17 @@
+{
+  "version": "1.0.0",
+  "session_id": "8cb22b4a-4067-422c-b11c-0309adbef447",
+  "current_state": "IDLE",
+  "task": null,
+  "plan": null,
+  "progress": {
+    "thinker_done": false,
+    "builder_done": false,
+    "tester_done": false
+  },
+  "error": null,
+  "timestamps": {
+    "created": "2026-03-19T10:31:04Z",
+    "last_updated": "2026-03-19T10:31:04Z"
+  }
+}

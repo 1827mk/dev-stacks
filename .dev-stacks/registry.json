@@ -1,150 +1,81 @@
 {
   "version": "1.0.0",
-  "last_scan": "2026-03-19T14:02:04Z",
+
   "mcp_servers": [
     "serena",
     "context7",
     "memory",
-    "filesystem",
-    "fetch",
     "web_reader",
-    "sequentialthinking",
-    "doc-forge",
-    "4_5v_mcp",
-    "plugin_chrome-devtools-mcp_chrome-devtools"
+    "fetch",
+    "chrome-devtools"
   ],
-  "plugins": [
-    "chrome-devtools-mcp",
-    "claude-code-setup",
-    "claude-md-management",
-    "code-review",
-    "code-simplifier",
-    "explanatory-output-style",
-    "feature-dev",
-    "frontend-design",
-    "hookify",
-    "learning-output-style",
-    "plugin-dev",
-    "security-guidance",
-    "skill-creator",
-    "superpowers"
-  ],
+
   "skills": {
-    "planning": [
-      "team-selector",
-      "complexity-scorer",
-      "intent-router",
-      "orchestrator",
-      "full",
-      "careful",
-      "standard"
-    ],
-    "implementation": [
-      "quick",
-      "dna-builder"
-    ],
-    "verification": [],
-    "git": [
-      "secret-scanner"
-    ],
-    "other": [
-      "checkpoint-manager",
-      "pattern-manager",
-      "audit-logger",
-      "report-engine",
-      "tool-discovery",
-      "bash-guard",
-      "scope-guard"
-    ]
+    "planning": ["brainstorming", "writing-plans"],
+    "implementation": ["frontend-design", "TDD"],
+    "verification": ["code-review", "simplify"],
+    "git": ["dev-commit"]
   },
-  "tool_keywords": {
-    "frontend-design": [
-      "UI",
-      "component",
-      "page",
-      "frontend",
-      "react",
-      "vue",
-      "css",
-      "style"
-    ],
-    "systematic-debugging": [
-      "bug",
-      "error",
-      "fix",
-      "debug",
-      "crash",
-      "exception"
-    ],
-    "claude-api": [
-      "API",
-      "anthropic",
-      "claude",
-      "SDK",
-      "llm"
-    ],
-    "code-review": [
-      "review",
-      "quality",
-      "check",
-      "audit"
-    ],
-    "context7": [
-      "docs",
-      "documentation",
-      "library",
-      "reference"
-    ],
-    "web_reader": [
-      "web",
-      "url",
-      "fetch",
-      "scrape",
-      "read"
-    ],
-    "WebSearch": [
-      "search",
-      "find",
-      "lookup",
-      "google"
-    ],
-    "serena": [
-      "codebase",
-      "symbol",
-      "find",
-      "reference",
-      "analyze"
-    ],
-    "memory": [
-      "remember",
-      "pattern",
-      "save",
-      "knowledge"
-    ],
-    "test-driven-development": [
-      "test",
-      "TDD",
-      "spec",
-      "unit test"
-    ],
-    "brainstorming": [
-      "idea",
-      "design",
-      "feature",
-      "new",
-      "create"
-    ],
-    "writing-plans": [
-      "plan",
-      "steps",
-      "implementation",
-      "roadmap"
-    ],
-    "chrome-devtools": [
-      "browser",
-      "debug",
-      "inspect",
-      "console"
-    ]
+
+  "intent_categories": {
+    "FIX_BUG": {
+      "keywords": ["bug", "error", "fix", "crash", "exception", "แก้", "ซ่อม", "ไม่ได้", "ไม่ทำงาน"],
+      "domains": ["backend", "frontend"],
+      "workflow_modifier": 0.1
+    },
+    "ADD_FEATURE": {
+      "keywords": ["add", "create", "implement", "new", "feature", "เพิ่ม", "สร้าง"],
+      "domains": ["frontend", "backend"],
+      "workflow_modifier": 0.15
+    },
+    "MODIFY": {
+      "keywords": ["change", "update", "modify", "edit", "refactor", "เปลี่ยน", "แก้ไข", "ปรับ"],
+      "domains": ["general"],
+      "workflow_modifier": 0.05
+    },
+    "EXPLAIN": {
+      "keywords": ["explain", "how", "what", "why", "tell", "อธิบาย", "ทำไม", "ยังไง"],
+      "domains": ["general"],
+      "workflow_modifier": -0.1
+    },
+    "RESEARCH": {
+      "keywords": ["find", "search", "lookup", "docs", "documentation", "หา", "ค้นหา"],
+      "domains": ["general"],
+      "workflow_modifier": -0.1
+    },
+    "TEST": {
+      "keywords": ["test", "verify", "check", "spec", "ทดสอบ", "ตรวจ"],
+      "domains": ["testing"],
+      "workflow_modifier": 0.0
+    },
+    "COMMIT": {
+      "keywords": ["commit", "push", "merge", "PR", "pull request"],
+      "domains": ["git"],
+      "workflow_modifier": -0.2
+    }
+  },
+
+  "domain_indicators": {
+    "frontend": ["UI", "component", "page", "react", "vue", "css", "style", "หน้า", "ปุ่ม", "form", "button"],
+    "backend": ["API", "endpoint", "server", "database", "auth", "ฐานข้อมูล", "server"],
+    "testing": ["test", "spec", "verify", "ทดสอบ"],
+    "security": ["auth", "login", "token", "password", "security", "JWT"],
+    "git": ["commit", "push", "merge", "branch", "PR"]
+  },
+
+  "complexity_keywords": {
+    "high": ["payment", "auth", "security", "database", "migration", "refactor", "architecture"],
+    "medium": ["API", "integration", "component", "endpoint"],
+    "low": ["typo", "comment", "style", "rename", "format"]
+  },
+
+  "workflow_tools": {
+    "FIX_BUG": ["systematic-debugging", "serena"],
+    "ADD_FEATURE": ["brainstorming", "frontend-design", "serena"],
+    "MODIFY": ["serena", "context7"],
+    "EXPLAIN": ["serena", "context7"],
+    "RESEARCH": ["context7", "web_reader"],
+    "TEST": ["TDD", "chrome-devtools"],
+    "COMMIT": ["dev-commit"]
   }
 }

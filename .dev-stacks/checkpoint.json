@@ -1,0 +1,14 @@
+{
+  "session_id": "8cb22b4a-4067-422c-b11c-0309adbef447",
+  "timestamp": "2026-03-19T14:27:54Z",
+  "state": {
+    "phase": "IDLE",
+    "current_task": null,
+    "progress": 100
+  },
+  "context": {
+    "files_touched": [],
+    "decisions_made": [],
+    "patterns_used": []
+  }
+}
