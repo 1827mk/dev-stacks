@@ -1,13 +1,13 @@
 {
-  "description": "Dev-Stacks hooks for intelligent development assistance",
+  "description": "Dev-Stacks intelligent development assistance hooks",
   "hooks": {
     "SessionStart": [
       {
-        "matcher": "startup|resume|clear|compact",
         "hooks": [
           {
             "type": "command",
-            "command": "bash -c 'echo \"🚀 DEV-STACKS READY\"'"
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/session-start.sh",
+            "timeout": 15
           }
         ]
       }
@@ -16,8 +16,43 @@
       {
         "hooks": [
           {
-            "type": "prompt",
-            "prompt": "You are Dev-Stacks Intent Router. Briefly analyze the user's prompt. Output ONE short line showing: Intent category and complexity score. If the prompt starts with '/' output nothing. Example output: '🔍 Intent: FIX_BUG | Complexity: 0.15'"
+            "type": "command",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/user-prompt-submit.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/scope-guard.sh",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/bash-guard.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/post-tool-use.sh",
+            "timeout": 10
           }
         ]
       }
@@ -26,19 +61,20 @@
       {
         "hooks": [
           {
-            "type": "prompt",
-            "prompt": "You are Dev-Stacks Completion Checker. Briefly verify the task was completed. If complete, output nothing. If incomplete, briefly state what is missing in one sentence."
+            "type": "command",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/stop.sh",
+            "timeout": 10
           }
         ]
       }
     ],
     "PreCompact": [
       {
-        "matcher": "manual|auto",
         "hooks": [
           {
-            "type": "prompt",
-            "prompt": "Note: Context compaction is occurring. Output nothing."
+            "type": "command",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/pre-compact.sh",
+            "timeout": 15
           }
         ]
       }
