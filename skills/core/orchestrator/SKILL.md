@@ -39,6 +39,11 @@ Extract:
 
 ### Step 2: Load or Create State
 
+First, ensure the state directory exists:
+```bash
+mkdir -p .dev-stacks
+```
+
 Read state file:
 ```bash
 Read: .dev-stacks/state.json
@@ -140,40 +145,49 @@ Agent tool:
 
 ### Step 5: Confirm with User
 
-After Thinker completes, show plan and ask:
+After Thinker completes, show plan and ask the user directly:
 
 ```
-Use AskUserQuestion:
-  questions:
-    - question: "Plan ready. Proceed with implementation?"
-      header: "Confirm"
-      options:
-        - label: "Yes, proceed"
-          description: "Start implementation with this plan"
-        - label: "Modify plan"
-          description: "I want to adjust the approach"
-        - label: "Cancel"
-          description: "Don't proceed with this task"
+📋 PLAN READY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Task: [task description]
+Approach: [from Thinker]
+Files to modify: [list]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Proceed with implementation? (yes/modify/cancel)
 ```
+
+Wait for user response:
+- "yes" → Proceed to BUILDING
+- "modify" → Return to Thinker with feedback
+- "cancel" → Clean up and go to IDLE
 
 ### Step 6: Handle Errors
 
-When any agent reports error, use AskUserQuestion:
+When any agent reports error, ask the user directly:
 
 ```
-questions:
-  - question: "Error occurred: [error details]. What should I do?"
-    header: "Error"
-    options:
-      - label: "Retry"
-        description: "Try the same operation again"
-      - label: "Re-plan"
-        description: "Return to Thinker for new approach"
-      - label: "Cancel task"
-        description: "Abort this task"
-      - label: "Continue anyway"
-        description: "Proceed despite error (risky)"
+⚠️ ERROR OCCURRED
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Error: [error details]
+Agent: [which agent failed]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+What should I do? (retry/replan/cancel/continue)
 ```
+
+Wait for user response:
+- "retry" → Retry the same operation
+- "replan" → Return to Thinker for new approach
+- "cancel" → Clean up and abort task
+- "continue" → Proceed despite error (risky)
+
+From ERROR state, valid transitions:
+- ERROR → (retry) → previous state
+- ERROR → (replan) → PLANNING
+- ERROR → (cancel) → IDLE
+- ERROR → (continue) → next state
 
 ### Step 7: Update State
 
@@ -182,11 +196,40 @@ After each transition, update state file:
 Edit: .dev-stacks/state.json
 ```
 
+Update:
+- current_state
+- task info (if IDLE → ANALYZING)
+- plan (after Thinker)
+- progress flags
+- timestamps
+
 ### Step 8: Save to Memory
 
-Store findings in MCP Memory using mcp__memory__create_entities
+Store findings in MCP Memory:
+```
+mcp__memory__create_entities:
+  entities:
+    - name: "task-[id]-analysis"
+      entityType: "dev-stacks-analysis"
+      observations:
+        - "intent: [intent]"
+        - "target: [target files]"
+        - "approach: [approach]"
+    - name: "task-[id]-plan"
+      entityType: "dev-stacks-plan"
+      observations:
+        - "step_1: [step]"
+        - "step_2: [step]"
+```
 
-### Step 9: Report Results
+### Step 9: Cleanup on DONE/CANCEL
+
+When task completes or is cancelled:
+1. Update state to IDLE
+2. Save pattern to memory if successful
+3. Reset progress flags
+
+### Step 10: Report Results
 
 When DONE:
 ```
