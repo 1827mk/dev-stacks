@@ -23,5 +23,19 @@
   "research": {
     "enabled": true,
     "tools": ["context7", "web_reader", "WebSearch", "fetch"]
+  },
+  "orchestrator": {
+    "enabled": true,
+    "auto_invoke": true,
+    "confirm_required": true,
+    "state_file": ".dev-stacks/state.json",
+    "error_handling": "ask_user",
+    "max_retries": 3,
+    "workflows": {
+      "quick": { "complexity_range": [0.0, 0.19], "agents": ["builder"] },
+      "standard": { "complexity_range": [0.2, 0.39], "agents": ["thinker", "builder"] },
+      "careful": { "complexity_range": [0.4, 0.59], "agents": ["thinker", "builder", "tester"] },
+      "full": { "complexity_range": [0.6, 1.0], "agents": ["thinker", "builder", "tester"], "require_confirmation": true }
+    }
   }
 }
