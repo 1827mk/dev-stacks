@@ -1,67 +1,62 @@
 # Dev-Stacks
 
-> **Zero-friction AI development assistant** — Intent routing, adaptive workflows, agent teams, pattern learning, and safety guards. Thai/English support.
+> **Prompt Engineering Gateway for Claude Code** — Hooks, Skills, Subagents, Agent Teams. Thai/English support.
 
-A Claude Code plugin that provides intelligent development assistance with Thai/English language support, adaptive workflows, and a team of specialized agents.
+A Claude Code plugin that acts as a prompt engineering gateway, automatically analyzing user prompts and recommending workflows with appropriate tools and agents.
 
 ## Features
 
-### 🧠 Intent Routing
-Automatically detects what you want to do from natural language (Thai, English, or mixed):
-- `แก้ typo ใน README` → FIX_BUG
-- `Add email validation` → ADD_FEATURE
-- `Why is API slow?` → INVESTIGATE
+### 🎯 Automatic Intent Detection
+Hook analyzes every prompt (Thai, English, or mixed):
+- `แก้ bug login ไม่ได้` → FIX_BUG | backend | complexity: 0.35
+- `Add email validation` → ADD_FEATURE | frontend | complexity: 0.25
+- `Why is API slow?` → EXPLAIN | backend | complexity: 0.15
 
-### ⚡ Adaptive Workflows
-Four workflow levels based on task complexity:
+### ⚡ Workflow Selection
+Four workflows based on complexity:
 
-| Workflow | Complexity | Agents | Use Case |
+| Workflow | Complexity | Action | Use Case |
 |----------|------------|--------|----------|
-| **Quick** | 0.0-0.19 | Builder | Typos, simple fixes |
-| **Standard** | 0.2-0.39 | Thinker + Builder | New features, moderate changes |
-| **Careful** | 0.4-0.59 | Thinker + Builder + Tester | Complex features, security |
-| **Full** | 0.6-1.0 | Full team + Confirmation | Payment, auth, database |
+| **Quick** | < 0.2 | Direct implementation | Typos, simple fixes |
+| **Standard** | 0.2-0.39 | thinker → builder | New features |
+| **Careful** | 0.4-0.59 | thinker → builder → reviewer | Security, complex |
+| **Full** | >= 0.6 | Agent team | Payment, auth, multi-component |
 
-### 👥 Agent Team
-Three specialized agents work together:
-- **🧠 Thinker** (opus) — Plans, analyzes, researches
-- **🛠️ Builder** (opus) — Implements, modifies, fixes
-- **✅ Tester** (sonnet) — Verifies, validates, tests
+### 🔧 Skills (5)
 
-### 📚 Pattern Learning
-Learns from successful tasks and suggests patterns for similar future work.
+| Skill | Purpose |
+|-------|---------|
+| `/dev-stacks:run` | Main orchestrator (auto-selects workflow) |
+| `/dev-stacks:team` | Agent team for complex tasks |
+| `/dev-stacks:research` | Research only, no implementation |
+| `/dev-stacks:implement` | Implementation only, skip planning |
+| `/dev-stacks:review` | Review only, verify existing code |
 
-### 🛡️ Safety Guards
-- **Scope Guard** — Protects sensitive files (.env, .git, credentials)
-- **Bash Guard** — Blocks dangerous commands (rm -rf /, DROP DATABASE)
-- **Secret Scanner** — Detects hardcoded secrets
+### 👥 Agents (3)
 
-### 🔍 Research Capability
-All agents can research when knowledge is insufficient:
+| Agent | Model | Role |
+|-------|-------|------|
+| **Thinker** | opus | Analyze, plan, research |
+| **Builder** | opus | Implement, modify, fix |
+| **Reviewer** | sonnet | Verify, test, ensure quality |
+
+### 🔍 MCP Integration
+Uses available MCP servers:
+- `serena` — Code intelligence
 - `context7` — Library documentation
-- `web_reader` — Web content, tutorials
-- `WebSearch` — General search, solutions
+- `memory` — Pattern storage
+- `web_reader` — Web content
 
 ## Installation
 
-### Option 1: Marketplace (Recommended)
-
-```bash
-# Add marketplace
-claude /plugin marketplace add https://github.com/1827mk/dev-stacks
-
-# Install plugin
-claude /plugin install dev-stacks
-```
-
-### Option 2: Clone to Claude Plugins Directory
+### Option 1: Clone to Claude Plugins Directory
 
 ```bash
 cd ~/.claude/plugins/
 git clone https://github.com/1827mk/dev-stacks.git
 ```
 
-### Option 3: Local Development
+### Option 2: Local Development
 
 ```bash
 # Clone anywhere
@@ -71,34 +66,57 @@ git clone https://github.com/1827mk/dev-stacks.git
 ln -s $(pwd)/dev-stacks ~/.claude/plugins/dev-stacks
 ```
 
-### Option 4: Per-Project
-
-Copy the `.claude-plugin/` directory to your project root.
-
-## Commands
-
-| Command | Description |
-|---------|-------------|
-| `/dev-stacks:status` | View system status |
-| `/dev-stacks:undo` | Undo changes (multiple levels) |
-| `/dev-stacks:learn` | Manage pattern memory |
-| `/dev-stacks:doctor` | Diagnose and recover |
-| `/dev-stacks:report` | Generate reports |
-| `/dev-stacks:help` | Display help |
-
 ## Usage
 
-Just describe what you need in natural language:
+### Automatic (Hook)
 
+Just describe what you need:
 ```
-แก้ typo ใน README ตรงคำว่า 'intallation'
-→ Builder fixes immediately (Quick)
+แก้ bug login ไม่ได้
 
-เพิ่ม email validation ในฟอร์ม login
-→ Thinker plans → Builder implements (Standard)
+Hook output:
+[DEV-STACKS] FIX_BUG | backend | complexity: 0.35
+Workflow: standard | Invoke: /dev-stacks:run
+Tools: systematic-debugging, serena
+```
 
-ทำไม API /users ช้า?
-→ Thinker investigates → Reports findings (Investigate)
+### Manual (Skills)
+
+Invoke skills directly:
+```
+/dev-stacks:run        # Execute workflow
+/dev-stacks:team       # Create agent team
+/dev-stacks:research   # Research only
+/dev-stacks:implement  # Implement only
+/dev-stacks:review     # Review only
+```
+
+## Examples
+
+### Quick Task (complexity < 0.2)
+```
+แก้ typo ใน README
+
+Hook: MODIFY | general | complexity: 0.15 | Workflow: quick
+AI implements directly (no skill invocation needed)
+```
+
+### Standard Task (complexity 0.2-0.39)
+```
+เพิ่ม email validation ใน login form
+
+Hook: ADD_FEATURE | frontend | complexity: 0.35 | Workflow: standard
+Invoke: /dev-stacks:run
+→ Thinker plans → Builder implements
+```
+
+### Complex Task (complexity >= 0.6)
+```
+เพิ่ม payment system รองรับ 3 providers
+
+Hook: ADD_FEATURE | backend | complexity: 0.65 | Workflow: full
+Invoke: /dev-stacks:team
+→ Lead + Security/Performance/Testing reviewers work in parallel
 ```
 
 ## Project Structure
@@ -106,94 +124,41 @@ Just describe what you need in natural language:
 ```
 dev-stacks/
 ├── .claude-plugin/
-│   ├── plugin.json          # Plugin manifest
-│   └── marketplace.json     # Marketplace metadata
-├── commands/                 # Slash commands
-│   ├── doctor.md
-│   ├── help.md
-│   ├── learn.md
-│   ├── report.md
-│   ├── status.md
-│   └── undo.md
-├── agents/                   # Agent definitions
-│   ├── builder.md
-│   ├── thinker.md
-│   └── tester.md
-├── skills/                   # Agent skills
-│   ├── core/                 # intent-router, complexity-scorer, team-selector
-│   ├── workflows/            # quick, standard, careful, full
-│   ├── guards/               # bash-guard, scope-guard, secret-scanner
-│   ├── memory/               # pattern-manager
-│   ├── dna/                  # dna-builder
-│   ├── audit/                # audit-logger
-│   ├── checkpoint/           # checkpoint-manager
-│   └── report/               # report-engine
+│   └── plugin.json          # Plugin manifest (v2.0.0)
 ├── hooks/
 │   ├── hooks.json           # Hook configuration
-│   ├── session-start.sh     # SessionStart hook
-│   ├── user-prompt-submit.sh # UserPromptSubmit hook
-│   ├── scope-guard.sh       # PreToolUse file guard
-│   ├── bash-guard.sh        # PreToolUse command guard
-│   ├── post-tool-use.sh     # PostToolUse audit
-│   ├── stop.sh              # Stop hook
-│   └── pre-compact.sh       # PreCompact backup
-└── config/
-    ├── defaults.json        # Default settings
-    ├── protected-paths.json # Protected file patterns
-    └── dangerous-commands.json # Dangerous command patterns
+│   └── prompt-enhancer.sh   # Main hook script
+├── skills/
+│   ├── run/SKILL.md         # Main orchestrator
+│   ├── team/SKILL.md        # Agent team
+│   ├── research/SKILL.md    # Research only
+│   ├── implement/SKILL.md   # Implementation only
+│   └── review/SKILL.md      # Review only
+├── agents/
+│   ├── thinker.md           # Analysis agent
+│   ├── builder.md           # Implementation agent
+│   └── reviewer.md          # Verification agent
+├── .dev-stacks/
+│   ├── registry.json        # Tools database
+│   └── state.json           # Task state (runtime)
+├── CLAUDE.md                # Project documentation
+└── spec/                    # Architecture specification
 ```
 
 ## Data Storage
 
-Dev-Stacks creates a `.dev-stacks/` directory in your project:
-
 ```
 .dev-stacks/
-├── dna.json           # Project DNA (architecture, patterns)
-├── checkpoint.json    # Session checkpoint (for recovery)
-├── logs/
-│   ├── session-*.log  # Session logs
-│   └── audit.jsonl    # Audit trail
-└── backups/           # PreCompact backups
+├── registry.json    # Tools database
+├── state.json       # Current task state
+└── logs/            # Session logs
 ```
 
-## Hooks
+## Hook
 
 | Hook | Purpose |
 |------|---------|
-| **SessionStart** | Initialize environment, load DNA and patterns |
-| **UserPromptSubmit** | Route intent, score complexity, select team |
-| **PreToolUse** | Scope guard, bash guard, secret scanner |
-| **PostToolUse** | Audit logging, pattern save offers |
-| **Stop** | Completion check, session summary |
-| **PreCompact** | Backup session state |
-
-## Configuration
-
-### defaults.json
-Workflow thresholds, agent settings, guard configuration.
-
-### protected-paths.json
-File patterns protected from modification:
-- CRITICAL: `.env*`, `*.pem`, `*.key`, `.git/`, `credentials*`
-- HIGH: `package.json`, `migrations/`
-- MEDIUM: `tsconfig.json`, `*.config.*`
-
-### dangerous-commands.json
-Bash commands blocked for safety:
-- CRITICAL: `rm -rf /`, `mkfs`, `DROP DATABASE`
-- HIGH: `TRUNCATE`, `DELETE FROM`
-- MEDIUM: `chmod -R 777`, `sudo`
-
-## MCP Tools Used
-
-| Tool | Purpose |
-|------|---------|
-| `mcp__filesystem__*` | File operations |
-| `mcp__memory__*` | Pattern storage |
-| `mcp__context7__*` | Library docs |
-| `mcp__web_reader__*` | Web content |
-| `mcp__serena__*` | Code intelligence (optional) |
+| **UserPromptSubmit** | Analyze prompt, classify intent, calculate complexity, write state |
 
 ## Language Support
 
@@ -201,21 +166,31 @@ Bash commands blocked for safety:
 - English ✅
 - Mixed (Thai + English) ✅
 
-Dev-Stacks understands all three naturally.
-
 ## Requirements
 
-- Claude Code CLI 1.0.33+
-- MCP Memory server (optional, for patterns)
-- MCP Filesystem server (optional, for checkpoints)
+- Claude Code CLI
+- `jq` (for hook script)
 
 ## Tips
 
-1. **Be specific** — Mention file names, function names when possible
-2. **Trust the agents** — They research when needed
-3. **Use commands** — `/dev-stacks:status`, `/dev-stacks:undo` for control
-4. **Learn patterns** — Save successful tasks as patterns
-5. **Check logs** — `.dev-stacks/logs/` for debugging
+1. **Trust the hook** — It analyzes every prompt automatically
+2. **Use `/dev-stacks:run`** — Main orchestrator for most tasks
+3. **Use `/dev-stacks:team`** — For complex, multi-component tasks
+4. **Check state.json** — See current task analysis
+
+## Changelog
+
+### v2.0.0
+- Complete rewrite with full feature utilization
+- Single hook with prompt enhancement
+- 5 focused skills (run/team/research/implement/review)
+- 3 compact agents (thinker/builder/reviewer)
+- Token optimization (52% reduction through context isolation)
+
+### v1.x
+- Initial release with orchestrator layer
+- Multiple hooks and guards
+- Complex skill structure
 
 ## License
 

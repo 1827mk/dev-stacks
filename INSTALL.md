@@ -1,102 +1,116 @@
 # Installation Guide
 
-## Marketplace Installation (Recommended)
+## Quick Start
+
+### Option 1: Clone to Claude Plugins Directory
 
 ```bash
-# Step 1: Add marketplace
-claude /plugin marketplace add https://github.com/1827mk/dev-stacks
+cd ~/.claude/plugins/
+git clone https://github.com/1827mk/dev-stacks.git
+```
 
-# Step 2: Install plugin
+### Option 2: Marketplace
+
+```bash
+claude /plugin marketplace add https://github.com/1827mk/dev-stacks
 claude /plugin install dev-stacks
 ```
 
-## Manual Installation
+### Option 3: Local Development
 
 ```bash
-# Clone repository
+# Clone anywhere
 git clone https://github.com/1827mk/dev-stacks.git
 
-# Install globally
-cp -r dev-stacks ~/.claude/plugins/dev-stacks
-
-# Or install per-project
-cp -r dev-stacks .claude/plugins/dev-stacks
+# Link to Claude plugins
+ln -s $(pwd)/dev-stacks ~/.claude/plugins/dev-stacks
 ```
-
-## Development Mode
-
-```bash
-# Clone and test locally
-git clone https://github.com/1827mk/dev-stacks.git
-cd dev-stacks
-
-# Test with Claude Code
-claude --plugin-dir .
-```
-
-Use `/reload-plugins` to reload changes during development.
 
 ## Requirements
 
-| Requirement | Version | Purpose |
-|-------------|---------|---------|
-| Claude Code CLI | >=1.0.33 | Plugin support |
-| MCP Memory Server | any | Pattern storage (optional) |
-| MCP Filesystem Server | any | Checkpoint/DNA storage (optional) |
+| Requirement | Purpose |
+|-------------|---------|
+| Claude Code CLI | Plugin support |
+| `jq` | Hook script (intent classification) |
+
+### Installing jq
+
+```bash
+# macOS
+brew install jq
+
+# Linux
+sudo apt install jq  # Debian/Ubuntu
+sudo dnf install jq  # Fedora
+
+# Windows (with Chocolatey)
+choco install jq
+```
+
+## Verify Installation
+
+After installation, just type any prompt:
+
+```
+แก้ bug login ไม่ได้
+
+You should see:
+[DEV-STACKS] FIX_BUG | backend | complexity: 0.35
+Workflow: standard | Invoke: /dev-stacks:run
+```
+
+## Available Skills
+
+| Skill | Description |
+|-------|-------------|
+| `/dev-stacks:run` | Main orchestrator (auto-selects workflow) |
+| `/dev-stacks:team` | Agent team for complex tasks |
+| `/dev-stacks:research` | Research only |
+| `/dev-stacks:implement` | Implementation only |
+| `/dev-stacks:review` | Review only |
 
 ## Post-Installation
 
-```bash
-# Reload plugins
-/reload-plugins
-
-# Verify installation
-/dev-stacks:status
-
-# View help
-/dev-stacks:help
-```
+No setup needed. The hook automatically activates on every prompt.
 
 ## Updating
 
 ```bash
-# Update from marketplace
-claude /plugin update dev-stacks
-
-# Or manual update
 cd ~/.claude/plugins/dev-stacks
 git pull origin main
-/reload-plugins
 ```
 
 ## Uninstallation
 
 ```bash
-# Remove plugin
 rm -rf ~/.claude/plugins/dev-stacks
 ```
 
 ## Troubleshooting
 
-### Plugin Not Loading
+### Hook Not Working
 
 ```bash
-# Check plugin directory
-ls ~/.claude/plugins/dev-stacks
+# Check jq is installed
+which jq
 
-# Verify plugin.json
-cat ~/.claude/plugins/dev-stacks/.claude-plugin/plugin.json
+# Check hook is executable
+ls -la ~/.claude/plugins/dev-stacks/hooks/prompt-enhancer.sh
 
-# Reload plugins
-/reload-plugins
+# Check registry exists
+cat ~/.claude/plugins/dev-stacks/.dev-stacks/registry.json
 ```
 
-### Run Diagnostics
+### Skills Not Found
 
 ```bash
-/dev-stacks:doctor
+# Verify skill files exist
+ls ~/.claude/plugins/dev-stacks/skills/*/SKILL.md
+
+# Verify agent files exist
+ls ~/.claude/plugins/dev-stacks/agents/*.md
 ```
 
 ---
 
-**Next**: [README](./README.md)
+**Next**: [README](./README.md) | [Spec](./spec/003-prompt-enhancer/spec.md)
