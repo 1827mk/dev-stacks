@@ -93,11 +93,18 @@ SESSION_LOG="$LOGS_DIR/session-$(date +"%Y-%m-%d-%H%M%S").log"
 touch "$SESSION_LOG"
 
 # Run Tool Discovery scan (async, non-blocking)
-PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:-$CWD}"
-SCAN_SCRIPT="$PLUGIN_ROOT/skills/tool-discovery/scan-tools.sh"
-if [[ -x "$SCAN_SCRIPT" ]]; then
-    # Run in background, don't block session start
-    bash "$SCAN_SCRIPT" > "$LOGS_DIR/tool-discovery.log" 2>&1 &
+# Find scan script from plugin cache or project directory
+PLUGIN_CACHE="${CLAUDE_PLUGIN_ROOT:-}"
+SCAN_SCRIPT_CACHE="$PLUGIN_CACHE/skills/tool-discovery/scan-tools.sh"
+SCAN_SCRIPT_LOCAL="$CWD/skills/tool-discovery/scan-tools.sh"
+
+if [[ -x "$SCAN_SCRIPT_CACHE" ]]; then
+    # Run from plugin cache, but pass project path as argument
+    bash "$SCAN_SCRIPT_CACHE" "$CWD" > "$LOGS_DIR/tool-discovery.log" 2>&1 &
+    TOOL_DISCOVERY="✓ Tool registry updated"
+elif [[ -x "$SCAN_SCRIPT_LOCAL" ]]; then
+    # Run from project directory
+    bash "$SCAN_SCRIPT_LOCAL" "$CWD" > "$LOGS_DIR/tool-discovery.log" 2>&1 &
     TOOL_DISCOVERY="✓ Tool registry updated"
 else
     TOOL_DISCOVERY="⚠ Tool discovery not available"

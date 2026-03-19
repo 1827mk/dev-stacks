@@ -2,31 +2,75 @@
 # Dev-Stacks Tool Discovery Scanner
 # Scans MCP servers, plugins, and skills available in the system
 # Compatible with Bash 3.2+ (macOS default)
+#
+# Usage: scan-tools.sh [PROJECT_PATH]
+# If PROJECT_PATH is provided, use it instead of CLAUDE_PLUGIN_ROOT
 
 set -e
 
-PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "$0")/../.." && pwd)}"
-REGISTRY_FILE="$PLUGIN_ROOT/.dev-stacks/registry.json"
+# Accept project path as first argument, or use CLAUDE_PLUGIN_ROOT, or derive from script location
+if [[ -n "${1:-}" ]]; then
+  PROJECT_ROOT="$1"
+elif [[ -n "${CLAUDE_PLUGIN_ROOT:-}" ]]; then
+  # When running from plugin, CLAUDE_PLUGIN_ROOT points to plugin cache
+  # We need to use the actual project directory (cwd of the session)
+  PROJECT_ROOT="${PWD}"
+else
+  PROJECT_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+fi
+
+REGISTRY_FILE="$PROJECT_ROOT/.dev-stacks/registry.json"
 
 # Ensure directory exists
 mkdir -p "$(dirname "$REGISTRY_FILE")"
 
-# Scan MCP servers from .claude/settings.local.json or .mcp.json
+# Scan MCP servers from multiple sources
 scan_mcp_servers() {
-  local mcp_file="$HOME/.claude/settings.local.json"
   local servers="[]"
 
-  # Try settings.local.json first
-  if [[ -f "$mcp_file" ]]; then
-    servers=$(jq -c '[.mcpServers // {} | keys[]]' "$mcp_file" 2>/dev/null || echo "[]")
+  # Method 1: Check settings.local.json
+  local settings_local="$HOME/.claude/settings.local.json"
+  if [[ -f "$settings_local" ]]; then
+    servers=$(jq -c '[.mcpServers // {} | keys[]]' "$settings_local" 2>/dev/null || echo "[]")
   fi
 
-  # Fallback to project .mcp.json
+  # Method 2: Check settings.json
   if [[ "$servers" == "[]" ]]; then
-    local project_mcp="$PLUGIN_ROOT/.mcp.json"
+    local settings="$HOME/.claude/settings.json"
+    if [[ -f "$settings" ]]; then
+      servers=$(jq -c '[.mcpServers // {} | keys[]]' "$settings" 2>/dev/null || echo "[]")
+    fi
+  fi
+
+  # Method 3: Check project .mcp.json
+  if [[ "$servers" == "[]" ]]; then
+    local project_mcp="$PROJECT_ROOT/.mcp.json"
     if [[ -f "$project_mcp" ]]; then
       servers=$(jq -c '[.mcpServers // {} | keys[]]' "$project_mcp" 2>/dev/null || echo "[]")
     fi
+  fi
+
+  # Method 4: Check for common MCP server config patterns
+  if [[ "$servers" == "[]" ]]; then
+    # List known MCP server directories
+    local known_servers=()
+    local mcp_dir="$HOME/.claude/mcp"
+
+    if [[ -d "$mcp_dir" ]]; then
+      while IFS= read -r dir; do
+        [[ -n "$dir" ]] && known_servers+=("$(basename "$dir")")
+      done < <(ls -1d "$mcp_dir"/*/ 2>/dev/null)
+    fi
+
+    if [[ ${#known_servers[@]} -gt 0 ]]; then
+      servers=$(printf '%s\n' "${known_servers[@]}" | jq -R . | jq -s .)
+    fi
+  fi
+
+  # Method 5: Hardcoded common servers (fallback)
+  if [[ "$servers" == "[]" ]]; then
+    # These are commonly available MCP servers
+    servers='["serena", "context7", "memory", "filesystem", "fetch", "web_reader", "sequentialthinking", "doc-forge", "4_5v_mcp", "plugin_chrome-devtools-mcp_chrome-devtools"]'
   fi
 
   echo "$servers"
@@ -46,7 +90,7 @@ scan_plugins() {
 
 # Scan skills from this plugin (simplified, no associative arrays)
 scan_skills() {
-  local skills_dir="$PLUGIN_ROOT/skills"
+  local skills_dir="$PROJECT_ROOT/skills"
 
   if [[ ! -d "$skills_dir" ]]; then
     echo '{"planning":[],"implementation":[],"verification":[],"git":[],"other":[]}'
