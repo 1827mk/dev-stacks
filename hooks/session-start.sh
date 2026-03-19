@@ -88,9 +88,16 @@ if [[ ! -f "$STATE_FILE" ]]; then
         }' > "$STATE_FILE"
 fi
 
-# Create session log
+# Create session log with initial content
 SESSION_LOG="$LOGS_DIR/session-$(date +"%Y-%m-%d-%H%M%S").log"
-touch "$SESSION_LOG"
+TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+cat > "$SESSION_LOG" << LOGHEADER
+# Dev-Stacks Session Log
+# Session ID: $SESSION_ID
+# Started: $TIMESTAMP
+# Working Directory: $CWD
+# ========================================
+LOGHEADER
 
 # Run Tool Discovery scan (async, non-blocking)
 # Find scan script from plugin cache or project directory
@@ -111,7 +118,7 @@ else
 fi
 
 # Check if DNA needs initialization
-DNA_NAME=$(jq -r '.project.name // ""' "$DNA_FILE" 2>/dev/null || echo "")
+DNA_NAME=$(jq -r '.identity.name // .project.name // ""' "$DNA_FILE" 2>/dev/null || echo "")
 NEEDS_INIT=""
 if [[ -z "$DNA_NAME" || "$DNA_NAME" == "" ]]; then
     NEEDS_INIT="
