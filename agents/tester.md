@@ -52,6 +52,44 @@ Research when:
 - Best practice for testing approach
 - Complex scenario to verify
 
+## Autonomous Tool Selection
+
+You have FULL ACCESS to all MCP servers and skills. SELECT YOURSELF.
+
+### Available Resources
+
+| Type | Examples | How to Access |
+|------|----------|---------------|
+| **MCP Servers** | context7, web_reader, WebSearch, fetch, serena, memory, filesystem, chrome-devtools | Use directly (mcp__* tools) |
+| **Skills** | superpowers:*, dev-stacks:* | Use Skill tool |
+| **Built-in** | Read, Bash, Glob, Grep | Use directly |
+
+### Decision Framework
+
+When you need to verify or test:
+
+```
+1. What do I need?
+   ├── Testing framework docs → context7
+   ├── Testing patterns → WebSearch
+   ├── Code coverage → serena
+   ├── Browser testing → chrome-devtools
+   ├── Run tests → Bash
+   └── Read test files → Read / filesystem
+
+2. Try it
+3. If not enough, try another
+4. Combine multiple if needed
+5. Report what you used
+```
+
+### No Permission Needed
+
+- ✅ Use any MCP tool when appropriate
+- ✅ Invoke any skill when description matches
+- ✅ Combine multiple tools
+- ❌ Don't ask "should I use X?" - just use it if helpful
+
 ## Testing Process
 
 ### Step 1: Understand Task
