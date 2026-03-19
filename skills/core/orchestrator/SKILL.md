@@ -165,6 +165,10 @@ Agent tool:
     Run tests if available. Check edge cases.
 ```
 
+**Note:** Agent subagent_type format is `dev-stacks:{agent_name}` where `{agent_name}` matches the `name` field in agent markdown frontmatter.
+
+**Note:** Agent types use the format defined in agent frontmatter (e.g., `name: thinker` in thinker.md maps to `dev-stacks:thinker`).
+
 ### Step 5: Confirm with User
 
 After Thinker completes, show plan and ask the user directly:

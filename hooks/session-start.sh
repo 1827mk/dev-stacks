@@ -62,6 +62,32 @@ if [[ ! -f "$CHECKPOINT_FILE" ]]; then
         }' > "$CHECKPOINT_FILE"
 fi
 
+# Create state file for orchestrator if not exists
+STATE_FILE="$DEV_STACKS_DIR/state.json"
+if [[ ! -f "$STATE_FILE" ]]; then
+    TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+    jq -n \
+        --arg sid "$SESSION_ID" \
+        --arg ts "$TIMESTAMP" \
+        '{
+            version: "1.0.0",
+            session_id: $sid,
+            current_state: "IDLE",
+            task: null,
+            plan: null,
+            progress: {
+                thinker_done: false,
+                builder_done: false,
+                tester_done: false
+            },
+            error: null,
+            timestamps: {
+                created: $ts,
+                last_updated: $ts
+            }
+        }' > "$STATE_FILE"
+fi
+
 # Create session log
 SESSION_LOG="$LOGS_DIR/session-$(date +"%Y-%m-%d-%H%M%S").log"
 touch "$SESSION_LOG"

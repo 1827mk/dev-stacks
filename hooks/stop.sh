@@ -18,8 +18,11 @@ CHECKPOINT_FILE="$DEV_STACKS_DIR/checkpoint.json"
 # Update checkpoint
 if [[ -f "$CHECKPOINT_FILE" ]]; then
     # Update timestamp and set to IDLE
+    TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
     TMP_FILE=$(mktemp)
-    jq '.state.phase = "IDLE" | .state.current_task = null | .state.progress = 100 | .timestamp = "'$(date -u +"%Y-%m-%dT%H:%M:%SZ")'"' "$CHECKPOINT_FILE" > "$TMP_FILE"
+    jq --arg ts "$TIMESTAMP" \
+       '.state.phase = "IDLE" | .state.current_task = null | .state.progress = 100 | .timestamp = $ts' \
+       "$CHECKPOINT_FILE" > "$TMP_FILE"
     mv "$TMP_FILE" "$CHECKPOINT_FILE"
 fi
 

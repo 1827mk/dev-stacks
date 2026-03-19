@@ -19,29 +19,16 @@ fi
 INTENT="OTHER"
 COMPLEXITY="0.2"
 
-# Thai keywords
-if echo "$USER_PROMPT" | grep -qiE 'แก้|ซ่อม|ไม่ทำงาน|error|bug'; then
+# Combined Thai + English keywords (fixed: no longer overwriting Thai results)
+if echo "$USER_PROMPT" | grep -qiE 'แก้|ซ่อม|ไม่ทำงาน|fix|repair|broken|error|bug'; then
     INTENT="FIX_BUG"
-elif echo "$USER_PROMPT" | grep -qiE 'เพิ่ม|สร้าง|implement|new'; then
+elif echo "$USER_PROMPT" | grep -qiE 'เพิ่ม|สร้าง|add|create|implement|new feature'; then
     INTENT="ADD_FEATURE"
-elif echo "$USER_PROMPT" | grep -qiE 'เปลี่ยน|แก้ไข|update|ปรับ'; then
+elif echo "$USER_PROMPT" | grep -qiE 'เปลี่ยน|แก้ไข|ปรับ|change|modify|update|adjust'; then
     INTENT="MODIFY_BEHAVIOR"
-elif echo "$USER_PROMPT" | grep -qiE 'ทำไม|หา|สาเหตุ|investigate|why'; then
+elif echo "$USER_PROMPT" | grep -qiE 'ทำไม|หา|สาเหตุ|why|find|investigate|debug'; then
     INTENT="INVESTIGATE"
-elif echo "$USER_PROMPT" | grep -qiE 'อธิบาย|ทำงานยังไง|how|explain'; then
-    INTENT="EXPLAIN"
-fi
-
-# English keywords
-if echo "$USER_PROMPT" | grep -qiE 'fix|repair|broken|error'; then
-    INTENT="FIX_BUG"
-elif echo "$USER_PROMPT" | grep -qiE 'add|create|implement|new feature'; then
-    INTENT="ADD_FEATURE"
-elif echo "$USER_PROMPT" | grep -qiE 'change|modify|update|adjust'; then
-    INTENT="MODIFY_BEHAVIOR"
-elif echo "$USER_PROMPT" | grep -qiE 'why|find|investigate|debug'; then
-    INTENT="INVESTIGATE"
-elif echo "$USER_PROMPT" | grep -qiE 'explain|how does|tell me'; then
+elif echo "$USER_PROMPT" | grep -qiE 'อธิบาย|ทำงานยังไง|explain|how does|tell me'; then
     INTENT="EXPLAIN"
 fi
 

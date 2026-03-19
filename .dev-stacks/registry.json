@@ -1,0 +1,139 @@
+{
+  "version": "1.0.0",
+  "last_scan": "2026-03-19T08:43:22Z",
+  "mcp_servers": [],
+  "plugins": [
+    "chrome-devtools-mcp",
+    "claude-code-setup",
+    "claude-md-management",
+    "code-review",
+    "code-simplifier",
+    "explanatory-output-style",
+    "feature-dev",
+    "frontend-design",
+    "hookify",
+    "learning-output-style",
+    "plugin-dev",
+    "security-guidance",
+    "skill-creator",
+    "superpowers"
+  ],
+  "skills": {
+    "planning": [
+      "team-selector",
+      "complexity-scorer",
+      "intent-router",
+      "orchestrator",
+      "full",
+      "careful",
+      "standard"
+    ],
+    "implementation": [
+      "quick",
+      "dna-builder"
+    ],
+    "verification": [],
+    "git": [
+      "secret-scanner"
+    ],
+    "other": [
+      "checkpoint-manager",
+      "pattern-manager",
+      "audit-logger",
+      "report-engine",
+      "tool-discovery",
+      "bash-guard",
+      "scope-guard"
+    ]
+  },
+  "tool_keywords": {
+    "frontend-design": [
+      "UI",
+      "component",
+      "page",
+      "frontend",
+      "react",
+      "vue",
+      "css",
+      "style"
+    ],
+    "systematic-debugging": [
+      "bug",
+      "error",
+      "fix",
+      "debug",
+      "crash",
+      "exception"
+    ],
+    "claude-api": [
+      "API",
+      "anthropic",
+      "claude",
+      "SDK",
+      "llm"
+    ],
+    "code-review": [
+      "review",
+      "quality",
+      "check",
+      "audit"
+    ],
+    "context7": [
+      "docs",
+      "documentation",
+      "library",
+      "reference"
+    ],
+    "web_reader": [
+      "web",
+      "url",
+      "fetch",
+      "scrape",
+      "read"
+    ],
+    "WebSearch": [
+      "search",
+      "find",
+      "lookup",
+      "google"
+    ],
+    "serena": [
+      "codebase",
+      "symbol",
+      "find",
+      "reference",
+      "analyze"
+    ],
+    "memory": [
+      "remember",
+      "pattern",
+      "save",
+      "knowledge"
+    ],
+    "test-driven-development": [
+      "test",
+      "TDD",
+      "spec",
+      "unit test"
+    ],
+    "brainstorming": [
+      "idea",
+      "design",
+      "feature",
+      "new",
+      "create"
+    ],
+    "writing-plans": [
+      "plan",
+      "steps",
+      "implementation",
+      "roadmap"
+    ],
+    "chrome-devtools": [
+      "browser",
+      "debug",
+      "inspect",
+      "console"
+    ]
+  }
+}

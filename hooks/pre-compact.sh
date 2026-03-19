@@ -36,8 +36,12 @@ if [[ -f "$DNA_FILE" ]]; then
     cp "$DNA_FILE" "$BACKUP_DIR/dna-$TIMESTAMP.json"
 fi
 
-# Archive session logs
-for log_file in "$LOGS_DIR"/session-*.log; do
+# Archive session logs (handle case where no files exist)
+shopt -s nullglob
+log_files=("$LOGS_DIR"/session-*.log)
+shopt -u nullglob
+
+for log_file in "${log_files[@]}"; do
     if [[ -f "$log_file" ]]; then
         cp "$log_file" "$ARCHIVE_DIR/"
     fi

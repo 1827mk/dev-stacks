@@ -12,6 +12,7 @@ allowed-tools:
   - mcp__context7__resolve-library-id
   - mcp__context7__query-docs
   - mcp__web_reader__webReader
+  - mcp__fetch__fetch
   - WebSearch
   - Bash
   - Read

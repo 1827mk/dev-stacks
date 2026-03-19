@@ -1,5 +1,6 @@
 {
   "name": "dev-stacks",
+  "version": "1.0.0",
   "description": "Zero-friction AI development assistant. Intent routing, adaptive workflows, agent teams, pattern learning, and safety guards. Thai/English support.",
   "author": {
     "name": "1827mk",

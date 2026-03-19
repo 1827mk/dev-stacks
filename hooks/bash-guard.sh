@@ -27,7 +27,7 @@ HIGH_PATTERNS=(
     "DELETE FROM"
 )
 
-# Medium risk patterns - warn
+# Medium risk patterns - warn but allow
 MEDIUM_PATTERNS=(
     "chmod -R 777"
     "^sudo"
@@ -67,6 +67,24 @@ Please confirm this is intentional.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 WARN_MSG
         exit 2
+    fi
+done
+
+# Check medium risk patterns - warn but don't block
+for pattern in "${MEDIUM_PATTERNS[@]}"; do
+    if echo "$COMMAND" | grep -qiE "$pattern"; then
+        cat << MEDIUM_MSG
+⚠️ Bash Guard: CAUTION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Command: $COMMAND
+Pattern: $pattern
+Reason: Medium risk - Proceed with caution
+
+This command is allowed but requires care.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+MEDIUM_MSG
+        # Don't exit, just warn
+        break
     fi
 done
 
