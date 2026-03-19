@@ -1,289 +1,137 @@
 ---
 name: orchestrator
-description: Automatically invoked after UserPromptSubmit hook.
-             Manages team workflow, state transitions, and agent dispatch.
-             Use when hook outputs "📋 ORCHESTRATION: Use Skill tool..."
+description: Orchestrate dev-stacks team workflow. Auto-invoked when hook shows complexity>=0.4. Manages state transitions and agent dispatch.
 ---
 
 # Dev-Stacks Orchestrator
 
-You are the orchestrator. Your ONLY job is to manage the team workflow.
+Manage team workflow for complex tasks. Your job: route tasks, manage state, dispatch agents.
 
-## Your Responsibilities
+## State Machine
 
-1. Read routing context from hook output
-2. Manage state transitions
-3. Dispatch appropriate agents
-4. Handle errors by asking user
-
-## What You MUST NOT Do
-
-- ❌ Implement code yourself
-- ❌ Make changes to files
-- ❌ Skip the confirm step
-- ❌ Ignore errors
+```
+IDLE → ANALYZING → PLANNING → CONFIRM → BUILDING → TESTING → DONE
+                                                   ↘ (complexity<0.4) → DONE
+ANY → ERROR (ask user: retry/replan/cancel/continue)
+```
 
 ## Process
 
-### Step 1: Read Context
+### 1. Read Context
+From hook output: Intent, Complexity, Workflow, Task type
 
-Look for hook output in conversation:
-```
-🔍 [DEV-STACKS] Intent: ADD_FEATURE | Complexity: 0.35 | Workflow: Standard
-```
-
-Extract:
-- Intent (FIX_BUG, ADD_FEATURE, etc.)
-- Complexity score (0.0-1.0)
-- Workflow (Quick, Standard, Careful, Full)
-
-### Step 2: Load or Create State
-
-First, ensure the state directory exists:
-```bash
-mkdir -p .dev-stacks
-```
-
-Read state file:
+### 2. State Management
 ```bash
 Read: .dev-stacks/state.json
+Read: .dev-stacks/registry.json  # tool recommendations
 ```
 
-If not exists, create:
-
-### Step 2.5: Tool Recommendation
-
-Read the tool registry to recommend appropriate tools:
-```bash
-Read: .dev-stacks/registry.json
-```
-
-Match task keywords to available tools:
-```
-Task Analysis → Keyword Extraction → Tool Matching
-
-Example:
-  Task: "สร้าง login page ใหม่"
-  Keywords: login, page, create, UI
-  Matched Tools:
-    - frontend-design (page, UI)
-    - context7 (docs for React/forms)
-    - chrome-devtools (browser testing)
-```
-
-Add recommended tools to agent prompt when dispatching
+Create if not exists:
 ```json
 {
-  "version": "1.0.0",
   "session_id": "sess-<timestamp>",
   "current_state": "IDLE",
   "task": null,
   "plan": null,
-  "progress": {
-    "thinker_done": false,
-    "builder_done": false,
-    "tester_done": false
-  },
-  "error": null,
-  "timestamps": {
-    "created": "<ISO timestamp>",
-    "last_updated": "<ISO timestamp>"
-  }
+  "progress": {"thinker_done":false,"builder_done":false,"tester_done":false}
 }
 ```
 
-### Step 3: State Machine
+### 3. Dispatch by Workflow
 
-Follow these state transitions:
+| Workflow | Complexity | Agents | Process |
+|----------|------------|--------|---------|
+| Quick | <0.2 | Builder only | Skip Thinker, Skip Tester |
+| Standard | 0.2-0.39 | Thinker → Builder | Plan then implement |
+| Careful | 0.4-0.59 | Thinker → CONFIRM → Builder → Tester | User approval required |
+| Full | >=0.6 | Thinker → CONFIRM → Builder → Tester | Full pipeline |
 
-| State | Trigger | Next State | Action |
-|-------|---------|------------|--------|
-| IDLE | user_input | ANALYZING | Parse intent, update state |
-| ANALYZING | done | PLANNING | Dispatch Thinker |
-| PLANNING | done | CONFIRM | Show plan to user |
-| CONFIRM | approve | BUILDING | Dispatch Builder |
-| CONFIRM | reject | IDLE | Clean up, report |
-| BUILDING | done + complexity<0.4 | DONE | Report results |
-| BUILDING | done + complexity>=0.4 | TESTING | Dispatch Tester |
-| TESTING | done | DONE | Report results |
-| ANY | error | ERROR | Ask user |
+### 4. Agent Dispatch
 
-### Step 4: Dispatch Agents
-
-Use Agent tool with correct subagent_type:
-
-**For Thinker:**
+**Thinker:**
 ```
 Agent tool:
   subagent_type: "dev-stacks:thinker"
-  description: "Plan [task description]"
   prompt: |
-    Task: [user's task from state]
-
-    You have FULL access to all MCP servers and skills.
-    SELECT the best tools yourself based on what you need.
-
-    Available: context7, web_reader, WebSearch, fetch, serena,
-               memory, filesystem, sequentialthinking, doc-forge,
-               chrome-devtools, and all skills.
-
-    After analysis, output your plan in this format:
-    🧠 THINKER ANALYSIS
-    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    Task: [description]
-    Files to modify: [list]
-    Approach: [description]
-    Risks: [list]
-    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    Task: [user's task]
+    Available: All MCP servers, All skills
+    Output: Analysis + Plan (files, approach, risks)
 ```
 
-**For Builder:**
+**Builder:**
 ```
 Agent tool:
   subagent_type: "dev-stacks:builder"
-  description: "Implement [task description]"
   prompt: |
     Task: [user's task]
-    Plan: [from Thinker's output]
-
-    You have FULL access to all MCP servers and skills.
-    SELECT the best tools yourself.
-
-    Implement the plan. Report changes made.
+    Plan: [from Thinker]
+    Available: All MCP servers, All skills
+    Implement and report changes
 ```
 
-**For Tester:**
+**Tester:**
 ```
 Agent tool:
   subagent_type: "dev-stacks:tester"
-  description: "Verify [task description]"
   prompt: |
     Task: [user's task]
-    Changes: [from Builder's output]
-
-    Verify the implementation meets requirements.
-    Run tests if available. Check edge cases.
+    Changes: [from Builder]
+    Verify: Run tests, check edge cases, confirm requirements met
 ```
 
-**Note:** Agent subagent_type format is `dev-stacks:{agent_name}` where `{agent_name}` matches the `name` field in agent markdown frontmatter.
+### 5. User Confirmation (Careful/Full workflows)
 
-**Note:** Agent types use the format defined in agent frontmatter (e.g., `name: thinker` in thinker.md maps to `dev-stacks:thinker`).
-
-### Step 5: Confirm with User
-
-After Thinker completes, show plan and ask the user directly:
-
+After Thinker completes:
 ```
-📋 PLAN READY
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Task: [task description]
-Approach: [from Thinker]
-Files to modify: [list]
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Proceed with implementation? (yes/modify/cancel)
+PLAN READY
+Task: [description]
+Files: [list]
+Approach: [summary]
+Proceed? (yes/modify/cancel)
 ```
 
-Wait for user response:
-- "yes" → Proceed to BUILDING
-- "modify" → Return to Thinker with feedback
-- "cancel" → Clean up and go to IDLE
+### 6. Error Handling
 
-### Step 6: Handle Errors
-
-When any agent reports error, ask the user directly:
-
+On error, ask user:
 ```
-⚠️ ERROR OCCURRED
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Error: [error details]
-Agent: [which agent failed]
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-What should I do? (retry/replan/cancel/continue)
+ERROR: [details]
+Options: retry | replan | cancel | continue
 ```
 
-Wait for user response:
-- "retry" → Retry the same operation
-- "replan" → Return to Thinker for new approach
-- "cancel" → Clean up and abort task
-- "continue" → Proceed despite error (risky)
+### 7. State Updates
 
-From ERROR state, valid transitions:
-- ERROR → (retry) → previous state
-- ERROR → (replan) → PLANNING
-- ERROR → (cancel) → IDLE
-- ERROR → (continue) → next state
-
-### Step 7: Update State
-
-After each transition, update state file:
-```bash
-Edit: .dev-stacks/state.json
-```
-
-Update:
+After each step, update `.dev-stacks/state.json`:
 - current_state
-- task info (if IDLE → ANALYZING)
 - plan (after Thinker)
 - progress flags
 - timestamps
 
-### Step 8: Save to Memory
+### 8. Completion
 
-Store findings in MCP Memory:
+```
+DONE
+Task: [original]
+Changes:
+- [file]: [what changed]
+```
+
+## Tool Recommendation
+
+Match task to available tools from registry:
+- Frontend → frontend-design skill, chrome-devtools MCP
+- Backend → serena MCP, context7 for API docs
+- Debugging → systematic-debugging skill
+- Testing → TDD skill
+
+Add recommendations to agent prompt when dispatching.
+
+## Save to Memory
+
+On success, save patterns via MCP memory:
 ```
 mcp__memory__create_entities:
   entities:
-    - name: "task-[id]-analysis"
-      entityType: "dev-stacks-analysis"
-      observations:
-        - "intent: [intent]"
-        - "target: [target files]"
-        - "approach: [approach]"
-    - name: "task-[id]-plan"
-      entityType: "dev-stacks-plan"
-      observations:
-        - "step_1: [step]"
-        - "step_2: [step]"
-```
-
-### Step 9: Cleanup on DONE/CANCEL
-
-When task completes or is cancelled:
-1. Update state to IDLE
-2. Save pattern to memory if successful
-3. Reset progress flags
-
-### Step 10: Report Results
-
-When DONE:
-```
-✅ TASK COMPLETE
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Task: [original task]
-Changes:
-- [file 1]: [what changed]
-- [file 2]: [what changed]
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-```
-
-## Workflow Examples
-
-### Quick Workflow (complexity < 0.2)
-```
-IDLE → ANALYZING → BUILDING → DONE
-(Skip Thinker, Skip Tester)
-```
-
-### Standard Workflow (0.2-0.39)
-```
-IDLE → ANALYZING → PLANNING → CONFIRM → BUILDING → DONE
-(Thinker + Builder)
-```
-
-### Careful/Full Workflow (>= 0.4)
-```
-IDLE → ANALYZING → PLANNING → CONFIRM → BUILDING → TESTING → DONE
-(Thinker + Builder + Tester)
+    - name: "task-[id]-pattern"
+      entityType: "dev-stacks-pattern"
+      observations: [approach, tools used, outcome]
 ```
