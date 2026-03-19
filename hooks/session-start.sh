@@ -103,8 +103,17 @@ else
     TOOL_DISCOVERY="⚠ Tool discovery not available"
 fi
 
+# Check if DNA needs initialization
+DNA_NAME=$(jq -r '.project.name // ""' "$DNA_FILE" 2>/dev/null || echo "")
+NEEDS_INIT=""
+if [[ -z "$DNA_NAME" || "$DNA_NAME" == "" ]]; then
+    NEEDS_INIT="
+⚠️ DNA not initialized. Run /dev-stacks:init to build project DNA.
+"
+fi
+
 # Output welcome message (stdout is added as context for SessionStart)
-cat << 'EOF'
+cat << EOF
 🚀 DEV-STACKS INITIALIZED
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Dev-Stacks is ready to assist you.
@@ -119,12 +128,13 @@ Features available:
 • Quality gates
 
 Commands:
+  /dev-stacks:init     - Initialize/update project DNA
   /dev-stacks:status   - View system status
   /dev-stacks:undo     - Undo changes
   /dev-stacks:learn    - Manage patterns
   /dev-stacks:doctor   - Diagnose issues
   /dev-stacks:help     - Show help
-
+$NEEDS_INIT
 Just describe what you need in natural language.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 EOF
