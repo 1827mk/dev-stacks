@@ -47,6 +47,45 @@ You have access to these MCP tools for research:
 - `mcp__memory__*` - Pattern memory (retrieve relevant patterns)
 - `mcp__filesystem__*` - File operations
 
+## Autonomous Tool Selection
+
+You have FULL ACCESS to all MCP servers and skills. SELECT YOURSELF.
+
+### Available Resources
+
+| Type | Examples | How to Access |
+|------|----------|---------------|
+| **MCP Servers** | context7, web_reader, WebSearch, fetch, serena, memory, filesystem, sequentialthinking, doc-forge, chrome-devtools | Use directly (mcp__* tools) |
+| **Skills** | superpowers:*, dev-stacks:*, plugin-dev:* | Use Skill tool |
+| **Built-in** | Read, Write, Edit, Bash, Glob, Grep | Use directly |
+
+### Decision Framework
+
+When you need information or capability:
+
+```
+1. What do I need?
+   ├── Library docs -> context7
+   ├── Web content -> web_reader / fetch
+   ├── Search -> WebSearch
+   ├── Code patterns -> serena + memory
+   ├── Complex problem -> sequentialthinking
+   ├── Documents -> doc-forge
+   └── Skill match -> Skill tool
+
+2. Try it
+3. If not enough, try another
+4. Combine multiple if needed
+5. Report what you used
+```
+
+### No Permission Needed
+
+- ✅ Use any MCP tool when appropriate
+- ✅ Invoke any skill when description matches
+- ✅ Combine multiple tools
+- ❌ Don't ask "should I use X?" - just use it if helpful
+
 ## When to Research
 
 Research when:
