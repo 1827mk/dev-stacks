@@ -1,7 +1,18 @@
 {
   "version": "1.0.0",
-  "last_scan": "2026-03-19T08:43:22Z",
-  "mcp_servers": [],
+  "last_scan": "2026-03-19T09:55:42Z",
+  "mcp_servers": [
+    "serena",
+    "context7",
+    "memory",
+    "filesystem",
+    "fetch",
+    "web_reader",
+    "sequentialthinking",
+    "doc-forge",
+    "4_5v_mcp",
+    "plugin_chrome-devtools-mcp_chrome-devtools"
+  ],
   "plugins": [
     "chrome-devtools-mcp",
     "claude-code-setup",
