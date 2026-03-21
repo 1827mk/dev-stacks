@@ -1,14 +1,16 @@
 #!/usr/bin/env bash
 # dev-stacks v3 — UserPromptSubmit: intent classification + state write
-# FIX: field is 'user_prompt' not 'prompt'
-# FIX: state path uses CLAUDE_PROJECT_DIR, not PLUGIN_ROOT/../
 
 set -euo pipefail
 
+# Resolve plugin root: try env var, then derive from script location
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:-$(dirname "$(dirname "$SCRIPT_DIR")")}"
+
 INPUT=$(cat)
 
-# FIX: correct field name per spec
-USER_PROMPT=$(printf '%s' "$INPUT" | jq -r '.user_prompt // ""')
+# JSON fields (note: Claude sends 'prompt', not 'user_prompt')
+USER_PROMPT=$(printf '%s' "$INPUT" | jq -r '.prompt // .user_prompt // ""')
 SESSION_ID=$(printf '%s' "$INPUT"  | jq -r '.session_id // "unknown"')
 CWD=$(printf '%s' "$INPUT"         | jq -r '.cwd // ""')
 
@@ -18,11 +20,11 @@ CWD=$(printf '%s' "$INPUT"         | jq -r '.cwd // ""')
 # Skip empty / very short prompts
 [[ -z "$USER_PROMPT" || ${#USER_PROMPT} -lt 2 ]] && exit 0
 
-# FIX: state lives in project dir, not parent of plugin root
+# State lives in project dir
 PROJECT_DIR="${CLAUDE_PROJECT_DIR:-$CWD}"
 DS_DIR="$PROJECT_DIR/.dev-stacks"
 STATE_PATH="$DS_DIR/state.json"
-REGISTRY_PATH="${CLAUDE_PLUGIN_ROOT}/registry.json"
+REGISTRY_PATH="${PLUGIN_ROOT}/registry.json"
 
 # Skip if registry missing (first-run before /dev-stacks:init)
 [[ ! -f "$REGISTRY_PATH" ]] && exit 0
