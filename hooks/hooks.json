@@ -1,5 +1,5 @@
 {
-  "description": "dev-stacks v3 — session init, intent classification, challenge gate, compact snapshot, completion gate, subagent gate",
+  "description": "dev-stacks v3: session init, prompt routing, compact snapshot, completion gate, subagent gate",
   "hooks": {
     "SessionStart": [
       {
@@ -15,22 +15,11 @@
     ],
     "UserPromptSubmit": [
       {
-        "matcher": "*",
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/prompt-enhancer.sh\"",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/prompt-router.sh\"",
             "timeout": 10
-          }
-        ]
-      },
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "prompt",
-            "prompt": "You are the dev-stacks challenge gate. Read the user prompt: $USER_PROMPT\n\nBlock (decision=block) and output '⚠️ CHALLENGE: [reason] — proceed? yes/no' if ANY is true:\n1. Request contradicts a confirmed decision/design with no justification.\n2. Action is irreversible (DROP, truncate, force-push protected branch, delete without backup).\n3. Task silently expands scope beyond what was stated.\n4. Security regression implied (auth bypass, secret hardcoded, unvalidated external input).\n\nFor /dev-stacks:* slash commands: always approve.\nFor quick/trivial tasks: always approve.\nOtherwise approve with no comment.\n\nReturn JSON only: {\"decision\": \"approve\"|\"block\", \"reason\": \"...\"}",
-            "timeout": 20
           }
         ]
       }
@@ -49,24 +38,22 @@
     ],
     "Stop": [
       {
-        "matcher": "*",
         "hooks": [
           {
             "type": "prompt",
-            "prompt": "You are the dev-stacks completion gate. Review the transcript.\n\nBlock (decision=block) only if ALL of these are true together:\n- Code was written (Write/Edit tools were used), AND\n- No verification was done (no test run, no Serena read confirming correctness, no build check).\n\nAlso block if:\n- An unresolved error exists that was not explicitly escalated to the user.\n- A ⚠️ CHALLENGE was raised but never answered.\n\nApprove if work is complete, exploratory (no writes), or user explicitly chose to stop.\n\nReturn JSON only: {\"decision\": \"approve\"|\"block\", \"reason\": \"...\"}",
-            "timeout": 25
+            "prompt": "Review this conversation transcript carefully.\n\nYour job: decide if Claude should stop or continue working.\n\nReturn {\"decision\": \"block\", \"reason\": \"<Thai or English explanation>\"} ONLY if ALL conditions are true:\n1. Code was written (Write/Edit/MultiEdit tools were used)\n2. No verification was done at all (no test, no review, no build)\n3. There is an unresolved error that was NOT shown to the user\n\nIn ALL other cases return nothing (empty stdout) or exit 0.\n\nIMPORTANT: When in doubt — do NOT block. Let the user decide.\nIMPORTANT: If user explicitly said stop or asked a question — do NOT block.\nIMPORTANT: Research, explanation, planning tasks — do NOT block.\n\nIf blocking: output JSON only, no other text.",
+            "timeout": 30
           }
         ]
       }
     ],
     "SubagentStop": [
       {
-        "matcher": "*",
         "hooks": [
           {
             "type": "prompt",
-            "prompt": "You are the dev-stacks subagent gate. Check the subagent transcript.\n\nApprove if the transcript contains one of these output headers:\n- 'THINKER ANALYSIS' or 'THINKER COMPLETE'\n- 'BUILDER IMPLEMENTATION' or 'BUILDER COMPLETE'\n- 'REVIEWER VERIFICATION' or 'REVIEWER COMPLETE'\n\nBlock if none of the above headers are present and code work was performed.\n\nReturn JSON only: {\"decision\": \"approve\"|\"block\", \"reason\": \"...\"}",
-            "timeout": 15
+            "prompt": "Check if this subagent produced its required output.\n\nReturn {\"decision\": \"block\", \"reason\": \"Missing output header\"} ONLY if:\n1. The subagent performed code work (used Write/Edit/MultiEdit)\n2. AND none of these headers appear in output:\n   - THINKER ANALYSIS\n   - BUILDER IMPLEMENTATION  \n   - REVIEWER VERIFICATION\n   - RESEARCH COMPLETE\n   - DESIGN COMPLETE\n\nIn ALL other cases: return nothing (empty stdout) or exit 0.\n\nWhen in doubt — do NOT block.\n\nIf blocking: output JSON only, no other text.",
+            "timeout": 20
           }
         ]
       }

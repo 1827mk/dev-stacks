@@ -1,91 +1,87 @@
 ---
 name: orchestrator
-description: Use this skill when routing a task to the correct dev-stacks workflow. Triggered by /dev-stacks:run or when complexity needs assessment before spawning agents.
+description: Use this skill when routing a task to the correct workflow and agents. Reads DNA and state, scores complexity, selects workflow, spawns agents in correct order.
 version: 3.0.0
 ---
 
-# dev-stacks orchestrator
+# Orchestrator Skill
 
-Route the current task to the correct workflow, then execute it.
+Route tasks → select workflow → spawn agents → gate output.
 
 ## Step 1 — Load context
 
-Read in order (stop when found):
-1. `.dev-stacks/snapshot.md` — if exists and has an unfinished task, ask user: resume or start fresh?
-2. `.dev-stacks/state.json` — get `task.intent`, `task.complexity`, `workflow.type`.
-3. `.dev-stacks/dna.json` — load as codebase context for agents.
+1. Read `.dev-stacks/dna.json` if exists → project name, stack, risk areas
+2. Read `.dev-stacks/state.json` if exists and recent (< 30 min) → use its classification
+3. Read `.dev-stacks/snapshot.md` if exists → ask user: resume or start fresh?
 
-If none exist: classify from the current prompt directly (skip to Step 2).
+## Step 2 — Classify (if no valid state)
 
-## Step 2 — Verify or re-classify
+**Intent** (Thai/English):
 
-If state.json exists and timestamp < 30 min: use its classification.
-Otherwise classify the current prompt:
+| Intent | Keywords |
+|--------|----------|
+| FIX_BUG | fix, bug, error, crash, แก้, พัง, ไม่ทำงาน |
+| ADD_FEATURE | add, create, implement, new, เพิ่ม, สร้าง |
+| MODIFY | change, update, refactor, เปลี่ยน, ปรับ |
+| EXPLAIN | explain, how, why, อธิบาย, ยังไง |
+| RESEARCH | find, search, docs, หา, ค้นหา |
+| DESIGN | design, architect, plan, ออกแบบ, วางแผน |
+| SECURITY | security, auth, vuln, ความปลอดภัย |
 
-| Intent | Thai / English keywords |
-|--------|------------------------|
-| FIX_BUG | แก้ bug / fix / error / crash / exception / ไม่ทำงาน |
-| ADD_FEATURE | เพิ่ม / add / create / implement / new feature / สร้าง |
-| MODIFY | เปลี่ยน / change / update / refactor / ปรับ |
-| EXPLAIN | อธิบาย / explain / how / what / why |
-| RESEARCH | หา / find / search / lookup / docs |
-| TEST | ทดสอบ / test / verify / spec |
-| COMMIT | commit / push / PR / merge |
-
-Complexity scoring (start at 0.2, adjust):
+**Complexity** (start 0.20, adjust):
 
 | Condition | Delta |
 |-----------|-------|
-| Affects security / auth / payment / DB migration | +0.25 |
-| Affects > 3 files | +0.15 |
-| External API / library integration | +0.10 |
-| Single-file clear change | −0.10 |
-| Typo / rename / comment | −0.15 |
-| FIX_BUG intent | +0.05 |
-| ADD_FEATURE intent | +0.10 |
-| EXPLAIN / RESEARCH / COMMIT intent | −0.15 |
+| security / payment / auth / DB migration | +0.25 |
+| > 3 files affected | +0.15 |
+| external API integration | +0.10 |
+| ADD_FEATURE or DESIGN intent | +0.10 |
+| SECURITY intent | +0.20 |
+| single file, clear change | −0.10 |
+| typo / comment / rename | −0.15 |
+| EXPLAIN / RESEARCH intent | −0.15 |
 
-Clamp to [0.1, 1.0].
+Clamp to [0.10, 1.0].
 
-## Step 3 — Select and execute workflow
+## Step 3 — Select workflow
 
-| Score | Workflow | Sequence |
-|-------|----------|----------|
-| < 0.20 | **quick** | Handle directly — no agents |
-| 0.20–0.39 | **standard** | thinker → builder |
-| 0.40–0.59 | **careful** | thinker → builder → reviewer |
-| ≥ 0.60 | **full** | thinker → builder → reviewer (×2 parallel: security + correctness) |
+| Score | Workflow | Agents |
+|-------|----------|--------|
+| < 0.20 | quick | Claude handles directly |
+| 0.20–0.39 | standard | thinker → builder |
+| 0.40–0.59 | careful | thinker → builder → reviewer |
+| ≥ 0.60 | full | thinker → builder → reviewer×2 parallel |
+
+## Step 4 — Execute
 
 ### quick
-Handle directly. Output result. No subagents.
+Handle directly. No subagents. Output result.
 
 ### standard
-1. Spawn **thinker** with the task.
-2. Wait for `THINKER ANALYSIS`.
-3. Spawn **builder** with thinker's plan in context.
-4. Report `BUILDER IMPLEMENTATION` summary to user.
+1. Spawn **thinker** (uses: analyze + design skills)
+2. Wait for `THINKER ANALYSIS`
+3. Spawn **builder** (uses: implement skill)
+4. Report `BUILDER IMPLEMENTATION` to user
 
 ### careful
-1. Spawn **thinker**.
-2. Wait for `THINKER ANALYSIS`.
-3. Spawn **builder**.
-4. Wait for `BUILDER IMPLEMENTATION`.
-5. Spawn **reviewer**.
-6. If reviewer outputs `Result: FAILED`: spawn **builder** again with reviewer's required fixes, then re-run reviewer.
-7. Report final status.
+1. Spawn **thinker**
+2. Spawn **builder**
+3. Spawn **reviewer** (uses: analyze + security skills)
+4. If `NEEDS FIXES`: present issues to user, ask how to proceed
+5. Report final status
 
 ### full
-Same as careful, but at step 5 spawn **two reviewer agents in parallel**:
-- Reviewer A: focus on security (auth, input validation, secrets).
-- Reviewer B: focus on correctness and enterprise constraints.
-Both must return `Result: PASSED` before work is complete.
+Same as careful + spawn two reviewers in parallel:
+- Reviewer A: security focus (security skill)
+- Reviewer B: correctness + production readiness (analyze skill)
+Both must pass before reporting complete.
 
-## Step 4 — Summary to user
+## Step 5 — Summary
 
 ```
 dev-stacks: [WORKFLOW] complete
 Intent: [INTENT] | Complexity: [SCORE]
 Agents: [list]
-Files changed: [from builder output]
-Status: PASSED / needs action
+Files: [from builder output]
+Status: [PASSED / action needed]
 ```

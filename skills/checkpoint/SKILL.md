@@ -1,84 +1,68 @@
 ---
 name: checkpoint
-description: Use this skill when the user runs /dev-stacks:checkpoint, or when a long task needs a mid-session save before context degrades. Writes .dev-stacks/snapshot.md.
+description: Use this skill to save current working state mid-task. Writes snapshot.md so work survives context compaction or session restart.
 version: 3.0.0
 ---
 
-# dev-stacks checkpoint
+# Checkpoint Skill
 
-Save current working state so it survives context compaction or session restart.
-
-## When to trigger
-- User types `/dev-stacks:checkpoint`
-- Thinker plan produced but builder not started
-- Builder completed 2+ file changes with more remaining
-- Context is getting large
+Save working state → survive context compaction.
 
 ## Process
 
-### 1. Collect from context (do not re-scan)
-- Original task description
-- Thinker plan verbatim (if produced)
-- Files changed so far (from BUILDER IMPLEMENTATION sections)
-- Files remaining (from plan minus done)
-- Decisions made, open challenges
+1. Collect from context (do not re-scan):
+   - Original task prompt
+   - Thinker plan (verbatim — do not summarise)
+   - Files changed so far
+   - Files remaining from plan
+   - Decisions made, open questions
 
-### 2. Collect from filesystem
-Run `Bash`: `git -C "$CLAUDE_PROJECT_DIR" rev-parse HEAD` → HEAD SHA
-Run `Bash`: `git -C "$CLAUDE_PROJECT_DIR" rev-parse --abbrev-ref HEAD` → branch
-Run `Bash`: `git -C "$CLAUDE_PROJECT_DIR" status --short` → modified files
+2. Run via Bash:
+   ```
+   git rev-parse HEAD
+   git rev-parse --abbrev-ref HEAD
+   git status --short
+   ```
 
-### 3. Write snapshot
-Overwrite `.dev-stacks/snapshot.md`:
-
+3. Write `.dev-stacks/snapshot.md`:
 ```markdown
-# dev-stacks checkpoint — <ISO timestamp>
+# dev-stacks snapshot — <timestamp>
 
 ## Task
-<original prompt verbatim>
+<prompt verbatim>
 
-## Intent / workflow
-Intent: <INTENT>
-Workflow: <quick|standard|careful|full>
-
-## Plan (thinker output)
-<paste verbatim or "(none)">
+## Plan
+<thinker output verbatim or "(none)">
 
 ## Progress
 Done:
-- <file:line-range>: <what was done>
-
+- [file:lines]: [what]
 Remaining:
-- <step N>: <file>
+- [step N]: [file]
 
-## Git state
+## Git
 HEAD: <SHA>
 Branch: <branch>
-Modified:
-<git status output>
+Modified: <git status>
 
 ## Decisions
 - <decision>
 
-## Open challenges
-<challenge text or "(none)">
+## Open questions
+<question or "(none)">
 
 ## On restore
-1. Read this snapshot before anything.
-2. Confirm remaining steps with user before continuing.
-3. Do NOT re-run steps listed under Done.
-4. If HEAD SHA changed, run: git diff <SHA> HEAD
+1. Read this before anything.
+2. Confirm remaining steps with user.
+3. Do NOT redo completed steps.
+4. If HEAD changed: git diff <SHA> HEAD
 ```
 
-### 4. Save to serena memory
-Call `mcp__serena__write_memory` with key `dev-stacks/checkpoint` — copy the snapshot content.
+4. `mcp__serena__write_memory` key `dev-stacks/checkpoint` — copy snapshot content.
 
-### 5. Confirm
+5. Confirm to user:
 ```
-Checkpoint saved → .dev-stacks/snapshot.md + serena memory
-Remaining steps: [N]
-Git HEAD: [SHA]
-Resume: /dev-stacks:run
+Checkpoint saved → .dev-stacks/snapshot.md
+Remaining: [N steps]
+HEAD: [SHA]
 ```
-
-**Rule**: Copy thinker plan verbatim — do not summarise.

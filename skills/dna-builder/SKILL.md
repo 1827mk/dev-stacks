@@ -1,59 +1,54 @@
 ---
 name: dna-builder
-description: Use this skill when the user runs /dev-stacks:init. Scans the codebase and builds .dev-stacks/dna.json — the project fingerprint that all agents read each session.
+description: Use this skill when /dev-stacks:registry is run. Scans codebase with Serena, builds .dev-stacks/dna.json and registry.json for agent context.
 version: 3.0.0
 ---
 
-# dev-stacks DNA builder
+# DNA Builder Skill
 
-Build a structured fingerprint of the current codebase.
+Scan codebase → build project fingerprint → save for all agents.
 
 ## Process
 
-### 1. Check onboarding
-Call `mcp__serena__check_onboarding_performed`. If not done, call `mcp__serena__onboarding` first.
+### 1. Serena onboarding
+Call `mcp__serena__check_onboarding_performed`. If false → call `mcp__serena__onboarding` first.
 
-### 2. Detect project structure
-Use `mcp__serena__list_dir` (recursive) to map top-level directories.
-Use `mcp__serena__find_file` to locate: `pom.xml`, `build.gradle`, `package.json`, `go.mod`, `Cargo.toml`, `requirements.txt`.
+### 2. Project structure
+Use `mcp__serena__list_dir` (recursive=false on root) to map top-level dirs.
+Use `mcp__serena__find_file` to locate: `pom.xml`, `build.gradle`, `package.json`, `go.mod`, `Cargo.toml`, `pyproject.toml`.
 
-### 3. Identify stack
-From build files determine: languages, frameworks, build tools, deployment context.
+### 3. Stack detection
+Read build files → identify languages, frameworks, build tool, deployment context.
 
-### 4. Map critical paths
+### 4. Critical paths
 Use `mcp__serena__find_symbol` to locate:
-- Auth entry point (login, authenticate, JWT verify)
-- Data access layer (repository, DAO, ORM config)
-- External call points (HTTP clients, MQ producers)
-- Global error handler
+- Auth entry (login, authenticate, verifyToken, JwtFilter)
+- Data access (Repository, DAO, db.Query, gorm.DB)
+- External calls (RestTemplate, http.Client, axios, fetch)
+- Error handler (ControllerAdvice, middleware, ErrorBoundary)
 
-### 5. Detect patterns
-Read 5–10 representative files with `mcp__serena__read_file`. Extract:
-- Naming conventions, error handling style, logging pattern, test pattern.
+### 5. Patterns
+Read 5 representative files with `mcp__serena__read_file`. Extract naming, error handling, logging, testing conventions.
 
-### 6. Check existing memories
-Call `mcp__serena__list_memories` — read any relevant memory files.
+### 6. Write files
 
-### 7. Write DNA file
-Write `.dev-stacks/dna.json`:
-
+**`.dev-stacks/dna.json`:**
 ```json
 {
   "version": "3.0.0",
-  "created": "<ISO timestamp>",
+  "created": "<ISO>",
   "project": {
     "name": "<name>",
     "type": "<monolith|microservice|library|frontend>",
-    "languages": ["<lang>"],
-    "frameworks": ["<framework>"],
+    "languages": [],
+    "frameworks": [],
     "build_tool": "<tool>",
     "deployment": "<platform>"
   },
   "structure": {
-    "entry_points": ["<file>"],
+    "entry_points": [],
     "source_root": "<dir>",
-    "test_root": "<dir>",
-    "config_files": ["<file>"]
+    "test_root": "<dir>"
   },
   "critical_paths": {
     "auth": "<file:line>",
@@ -67,20 +62,31 @@ Write `.dev-stacks/dna.json`:
     "logging": "<description>",
     "testing": "<description>"
   },
-  "risk_areas": ["<area that needs extra care>"]
+  "risk_areas": []
 }
 ```
 
-**Rule**: Never write a value you have not confirmed from reading a real file. Unknown → `"unknown"`.
-
-### 8. Save to serena memory
-Call `mcp__serena__write_memory` with key `dev-stacks/dna-summary` — write a one-paragraph summary for future sessions.
-
-### 9. Report
+**`.dev-stacks/registry.json`:**
+```json
+{
+  "version": "3.0.0",
+  "updated": "<ISO>",
+  "mcp_servers": ["serena", "memory", "filesystem", "context7", "fetch"],
+  "intent_categories": { "<from orchestrator skill>" },
+  "complexity_factors": { "<high/medium/low keywords>" }
+}
 ```
-DNA built: [project name]
+
+**Rule**: Unknown value → write `"unknown"`, never guess.
+
+### 7. Save to serena memory
+`mcp__serena__write_memory` key `dev-stacks/dna` — one-paragraph project summary.
+
+### 8. Report
+```
+Registry built: [project name]
 Stack: [languages + frameworks]
-Critical paths: [count] mapped
-Risk areas: [list]
-Saved to: .dev-stacks/dna.json + serena memory
+Critical paths mapped: [N]
+Risk areas: [list or "none"]
+Files: .dev-stacks/dna.json, .dev-stacks/registry.json
 ```

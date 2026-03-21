@@ -1,11 +1,11 @@
 {
   "name": "dev-stacks",
   "version": "3.0.0",
-  "description": "Gateway orchestrator: intent routing, adaptive workflows, agent teams, context persistence, safety guards. Thai/English.",
+  "description": "Full-stack dev orchestrator. Intent routing, adaptive workflows, multi-agent teams, context persistence, safety guards. Thai/English.",
   "author": {
     "name": "1827mk",
     "url": "https://github.com/1827mk"
   },
   "license": "MIT",
-  "keywords": ["orchestrator", "intent-routing", "agents", "workflows", "safety-guards", "thai-english"]
+  "keywords": ["orchestrator", "intent-routing", "agents", "workflows", "safety-guards", "thai-english", "full-stack"]
 }
