@@ -1,31 +1,29 @@
 ---
 name: implement
-description: This skill should be used when the user asks to "implement", "build", "just do it", "skip planning", "direct implementation", or when implementation-only workflow without planning phase is needed.
+description: Use this skill when the user runs /dev-stacks:implement or when a plan already exists and implementation should start immediately without re-planning. Spawns builder only.
+version: 3.0.0
 ---
 
-# Dev-Stacks Implement
+# dev-stacks implement
 
-Direct implementation without planning phase.
+Direct implementation — skips thinker, goes straight to builder.
 
-## Use When
+## Use when
+- A thinker plan already exists in context
+- Task is simple and clearly defined
+- User says "just do it" / "ทำเลย"
 
-- Plan already exists
-- Simple, clear task
-- Following established patterns
-- "Just do it"
+## Pre-condition check
+Before spawning builder, verify ONE of:
+- `THINKER ANALYSIS` exists in context, OR
+- The task is clearly bounded (single file, known change)
+
+If neither: recommend `/dev-stacks:run` instead.
 
 ## Process
+1. Spawn **builder** agent.
+2. Pass thinker's plan as context if available.
+3. Report `BUILDER IMPLEMENTATION` summary.
 
-1. Read state.json
-2. Spawn builder subagent
-3. Return changes to main context
-
-## Output
-
-```
-BUILDER: Implemented [task]
-Files:
-- [file]: [change]
-
-Done. [summary]
-```
+## After builder completes
+Ask user: "Run reviewer? `/dev-stacks:review` to verify."

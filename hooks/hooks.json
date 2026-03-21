@@ -1,10 +1,74 @@
 {
+  "description": "dev-stacks v3 — session init, intent classification, challenge gate, compact snapshot, completion gate, subagent gate",
   "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/session-start.sh\"",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
     "UserPromptSubmit": [
       {
-        "type": "command",
-        "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/prompt-enhancer.sh",
-        "timeout": 5
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/prompt-enhancer.sh\"",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "You are the dev-stacks challenge gate. Read the user prompt: $USER_PROMPT\n\nBlock (decision=block) and output '⚠️ CHALLENGE: [reason] — proceed? yes/no' if ANY is true:\n1. Request contradicts a confirmed decision/design with no justification.\n2. Action is irreversible (DROP, truncate, force-push protected branch, delete without backup).\n3. Task silently expands scope beyond what was stated.\n4. Security regression implied (auth bypass, secret hardcoded, unvalidated external input).\n\nFor /dev-stacks:* slash commands: always approve.\nFor quick/trivial tasks: always approve.\nOtherwise approve with no comment.\n\nReturn JSON only: {\"decision\": \"approve\"|\"block\", \"reason\": \"...\"}",
+            "timeout": 20
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/pre-compact.sh\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "You are the dev-stacks completion gate. Review the transcript.\n\nBlock (decision=block) only if ALL of these are true together:\n- Code was written (Write/Edit tools were used), AND\n- No verification was done (no test run, no Serena read confirming correctness, no build check).\n\nAlso block if:\n- An unresolved error exists that was not explicitly escalated to the user.\n- A ⚠️ CHALLENGE was raised but never answered.\n\nApprove if work is complete, exploratory (no writes), or user explicitly chose to stop.\n\nReturn JSON only: {\"decision\": \"approve\"|\"block\", \"reason\": \"...\"}",
+            "timeout": 25
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "You are the dev-stacks subagent gate. Check the subagent transcript.\n\nApprove if the transcript contains one of these output headers:\n- 'THINKER ANALYSIS' or 'THINKER COMPLETE'\n- 'BUILDER IMPLEMENTATION' or 'BUILDER COMPLETE'\n- 'REVIEWER VERIFICATION' or 'REVIEWER COMPLETE'\n\nBlock if none of the above headers are present and code work was performed.\n\nReturn JSON only: {\"decision\": \"approve\"|\"block\", \"reason\": \"...\"}",
+            "timeout": 15
+          }
+        ]
       }
     ]
   }

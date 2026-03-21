@@ -1,63 +1,42 @@
 ---
 name: team
-description: This skill should be used when the user asks to "create team", "complex task", "parallel review", "full workflow", or when task complexity >= 0.6 requires coordinated agent team with shared task list.
+description: Use this skill when the user runs /dev-stacks:team or when task complexity >= 0.6 requiring coordinated parallel review. Lead agent + parallel security and correctness reviewers.
+version: 3.0.0
 ---
 
-# Dev-Stacks Team
+# dev-stacks team
 
-Create coordinated agent team for complex tasks.
+Coordinated agent team for complex tasks (complexity ≥ 0.6).
 
-## When to Use
+## When to use
+- Complexity ≥ 0.6
+- Multiple components affected simultaneously
+- Security or payment critical
+- Requires independent parallel review
 
-- Complexity >= 0.6
-- Multiple components affected
-- Security/performance critical
-- Requires parallel review
+## Team structure
 
-## Team Structure
+**Lead** (orchestrates): thinker role — plans, spawns builders and reviewers, integrates results.
 
-### Lead Agent
-- Coordinates work
-- Makes architectural decisions
-- Resolves conflicts
+**Security Reviewer** (parallel): reviewer agent focused on auth, input validation, injection risks, secrets.
 
-### Reviewer Agents (parallel)
-
-**Security Reviewer**
-- Focus: Auth, data handling, injection risks
-
-**Performance Reviewer**
-- Focus: Query optimization, caching, load
-
-**Testing Reviewer**
-- Focus: Test coverage, edge cases
-
-## Coordination
-
-- Shared task list (all teammates see)
-- Peer-to-peer messaging (SendMessage tool)
-- Independent work (lead doesn't micromanage)
-- Task claiming (first to claim owns it)
+**Correctness Reviewer** (parallel): reviewer agent focused on requirements, enterprise constraints, regressions.
 
 ## Process
 
-1. Read state.json
-2. Create team with TeamCreate
-3. Spawn teammates with Agent tool
-4. Lead breaks down task into subtasks
-5. Reviewers claim and work on subtasks
-6. Teammates message each other
-7. Lead integrates results
-8. Return summary to main context
+1. Lead spawns **thinker** agent → waits for `THINKER ANALYSIS`.
+2. Lead spawns **builder** agent → waits for `BUILDER IMPLEMENTATION`.
+3. Lead spawns **security reviewer** and **correctness reviewer** in parallel.
+4. Both reviewers must return `Result: PASSED` before work is complete.
+5. If either returns `Result: FAILED`: lead spawns **builder** again with all required fixes combined, then re-runs both reviewers.
+6. Lead reports final summary.
 
 ## Output
-
 ```
-TEAM: [lead + reviewers]
-TASKS: [n] subtasks created
-RESULTS:
-- Security: [issues found/fixed]
-- Performance: [optimizations]
-- Testing: [tests added]
-Done. [summary]
+TEAM COMPLETE
+Thinker: [plan summary]
+Builder: [files changed]
+Security review: PASSED / FAILED — [findings]
+Correctness review: PASSED / FAILED — [findings]
+Status: DONE / [action needed]
 ```

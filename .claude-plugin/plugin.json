@@ -1,21 +1,11 @@
 {
   "name": "dev-stacks",
-  "version": "2.0.1",
-  "description": "Zero-friction AI development assistant. Intent routing, adaptive workflows, agent teams, pattern learning, and safety guards. Thai/English support.",
+  "version": "3.0.0",
+  "description": "Gateway orchestrator: intent routing, adaptive workflows, agent teams, context persistence, safety guards. Thai/English.",
   "author": {
     "name": "1827mk",
-    "email": "",
     "url": "https://github.com/1827mk"
   },
   "license": "MIT",
-  "keywords": [
-    "orchestrator",
-    "intent-routing",
-    "agents",
-    "workflows",
-    "pattern-learning",
-    "safety-guards",
-    "thai-english"
-  ],
-  "hooks": "./hooks/hooks.json"
+  "keywords": ["orchestrator", "intent-routing", "agents", "workflows", "safety-guards", "thai-english"]
 }

@@ -7,14 +7,14 @@
   },
   "metadata": {
     "description": "Zero-friction AI development assistant plugins for Claude Code",
-    "version": "2.0.1"
+    "version": "3.0.0"
   },
   "plugins": [
     {
       "name": "dev-stacks",
       "source": "./",
-      "description": "Zero-friction AI development assistant. Intent routing, adaptive workflows, agent teams, pattern learning, and safety guards. Thai/English support.",
-      "version": "2.0.1",
+      "description": "Full-stack dev orchestrator. Intent routing, adaptive workflows (quick/standard/careful/full), multi-agent teams, context persistence across compaction, challenge protocol, safety guards. Thai/English support.",
+      "version": "3.0.0",
       "author": {
         "name": "1827mk",
         "url": "https://github.com/1827mk"
@@ -25,14 +25,15 @@
         "intent-routing",
         "agents",
         "workflows",
-        "pattern-learning",
         "safety-guards",
-        "thai-english"
+        "context-persistence",
+        "thai-english",
+        "full-stack"
       ],
       "category": "Developer Tools",
       "requirements": {
         "claudeCode": ">=1.0.33",
-        "mcpServers": ["memory", "filesystem"]
+        "mcpServers": ["serena", "memory", "filesystem", "context7"]
       }
     }
   ]
