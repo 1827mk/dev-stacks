@@ -1,10 +1,21 @@
 {
   "name": "dev-stacks",
-  "version": "2.0.0",
-  "description": "Full-featured Claude Code plugin. Prompt engineering gateway with hooks, skills, subagents, and agent teams. Token-optimized with context isolation.",
+  "version": "2.0.1",
+  "description": "Zero-friction AI development assistant. Intent routing, adaptive workflows, agent teams, pattern learning, and safety guards. Thai/English support.",
   "author": {
     "name": "1827mk",
     "email": "",
     "url": "https://github.com/1827mk"
-  }
+  },
+  "license": "MIT",
+  "keywords": [
+    "orchestrator",
+    "intent-routing",
+    "agents",
+    "workflows",
+    "pattern-learning",
+    "safety-guards",
+    "thai-english"
+  ],
+  "hooks": "./hooks/hooks.json"
 }

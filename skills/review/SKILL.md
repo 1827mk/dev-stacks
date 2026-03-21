@@ -1,6 +1,6 @@
 ---
 name: review
-description: Review-only workflow. Verifies existing implementation without changes.
+description: This skill should be used when the user asks to "review", "verify", "check code", "quality check", "pre-commit review", "ตรวจสอบ", or when review-only workflow without changes is needed.
 ---
 
 # Dev-Stacks Review

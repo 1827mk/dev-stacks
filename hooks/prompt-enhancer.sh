@@ -1,17 +1,21 @@
 #!/bin/bash
-# Dev-Stacks Prompt Enhancer v2.0.0
+# Dev-Stacks Prompt Enhancer v2.0.1
 # Entry point for full-feature plugin architecture
 
 set -euo pipefail
 
+# Resolve plugin root directory
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:-$(dirname "$SCRIPT_DIR")}"
+
 # Configuration
-REGISTRY_PATH="${CLAUDE_PLUGIN_ROOT:-.}/../.dev-stacks/registry.json"
-STATE_PATH="${CLAUDE_PLUGIN_ROOT:-.}/../.dev-stacks/state.json"
+REGISTRY_PATH="${PLUGIN_ROOT}/../.dev-stacks/registry.json"
+STATE_PATH="${PLUGIN_ROOT}/../.dev-stacks/state.json"
 MAX_OUTPUT_LINES=3
 
 # Read JSON input from stdin
 INPUT=$(cat)
-USER_PROMPT=$(echo "$INPUT" | jq -r '.user_prompt // ""')
+USER_PROMPT=$(echo "$INPUT" | jq -r '.prompt // ""')
 SESSION_ID=$(echo "$INPUT" | jq -r '.session_id // "unknown"')
 CWD=$(echo "$INPUT" | jq -r '.cwd // "."')
 
@@ -230,9 +234,21 @@ main() {
     # Step 5: Write state
     write_state "$SESSION_ID" "$USER_PROMPT" "$intent" "$domain" "$complexity" "$workflow"
 
-    # Step 6: Output (2-3 lines max)
+    # Step 6: Map workflow to skill
+    local skill=""
+    case "$workflow" in
+        "quick") skill="" ;;
+        "standard"|"careful") skill="run" ;;
+        "full") skill="team" ;;
+    esac
+
+    # Step 7: Output (2-3 lines max)
     echo "[DEV-STACKS] $intent | $domain | complexity: $complexity"
-    echo "Workflow: $workflow | Invoke: /dev-stacks:$workflow"
+    if [[ -n "$skill" ]]; then
+        echo "Workflow: $workflow | Invoke: /dev-stacks:$skill"
+    else
+        echo "Workflow: $workflow | Direct execution"
+    fi
 
     # Add tool suggestions for certain workflows
     if [[ "$workflow" != "quick" ]]; then

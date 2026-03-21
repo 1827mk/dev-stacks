@@ -1,81 +1,64 @@
 {
-  "version": "1.0.0",
-
-  "mcp_servers": [
-    "serena",
-    "context7",
-    "memory",
-    "web_reader",
-    "fetch",
-    "chrome-devtools"
-  ],
-
-  "skills": {
-    "planning": ["brainstorming", "writing-plans"],
-    "implementation": ["frontend-design", "TDD"],
-    "verification": ["code-review", "simplify"],
-    "git": ["dev-commit"]
-  },
-
+  "version": "2.0.1",
   "intent_categories": {
     "FIX_BUG": {
-      "keywords": ["bug", "error", "fix", "crash", "exception", "แก้", "ซ่อม", "ไม่ได้", "ไม่ทำงาน"],
-      "domains": ["backend", "frontend"],
-      "workflow_modifier": 0.1
-    },
-    "ADD_FEATURE": {
-      "keywords": ["add", "create", "implement", "new", "feature", "เพิ่ม", "สร้าง"],
-      "domains": ["frontend", "backend"],
-      "workflow_modifier": 0.15
-    },
-    "MODIFY": {
-      "keywords": ["change", "update", "modify", "edit", "refactor", "เปลี่ยน", "แก้ไข", "ปรับ"],
-      "domains": ["general"],
+      "keywords": ["fix", "bug", "error", "crash", "broken", "fail", "issue", "problem", "not working", "doesn't work", "แก้", "บัค", "ผิด", "error"],
       "workflow_modifier": 0.05
     },
+    "ADD_FEATURE": {
+      "keywords": ["add", "create", "implement", "build", "new", "feature", "เพิ่ม", "สร้าง", "ทำ", "implement"],
+      "workflow_modifier": 0.1
+    },
+    "MODIFY": {
+      "keywords": ["change", "update", "modify", "refactor", "edit", "ปรับ", "แก้ไข", "update"],
+      "workflow_modifier": 0
+    },
     "EXPLAIN": {
-      "keywords": ["explain", "how", "what", "why", "tell", "อธิบาย", "ทำไม", "ยังไง"],
-      "domains": ["general"],
+      "keywords": ["explain", "what", "how", "why", "describe", "tell me", "อธิบาย", "คืออะไร", "ทำงานยังไง"],
       "workflow_modifier": -0.1
     },
     "RESEARCH": {
-      "keywords": ["find", "search", "lookup", "docs", "documentation", "หา", "ค้นหา"],
-      "domains": ["general"],
-      "workflow_modifier": -0.1
+      "keywords": ["research", "find", "search", "look for", "investigate", "ค้นหา", "หา", "research"],
+      "workflow_modifier": -0.05
     },
     "TEST": {
-      "keywords": ["test", "verify", "check", "spec", "ทดสอบ", "ตรวจ"],
-      "domains": ["testing"],
-      "workflow_modifier": 0.0
+      "keywords": ["test", "verify", "check", "validate", "ทดสอบ", "ตรวจ", "test"],
+      "workflow_modifier": 0.05
     },
     "COMMIT": {
-      "keywords": ["commit", "push", "merge", "PR", "pull request"],
-      "domains": ["git"],
-      "workflow_modifier": -0.2
+      "keywords": ["commit", "push", "merge", "branch", "git"],
+      "workflow_modifier": -0.15
     }
   },
-
   "domain_indicators": {
-    "frontend": ["UI", "component", "page", "react", "vue", "css", "style", "หน้า", "ปุ่ม", "form", "button"],
-    "backend": ["API", "endpoint", "server", "database", "auth", "ฐานข้อมูล", "server"],
-    "testing": ["test", "spec", "verify", "ทดสอบ"],
-    "security": ["auth", "login", "token", "password", "security", "JWT"],
-    "git": ["commit", "push", "merge", "branch", "PR"]
+    "frontend": ["react", "vue", "angular", "css", "html", "ui", "component", "page", "frontend"],
+    "backend": ["api", "server", "database", "endpoint", "backend", "rest", "graphql"],
+    "devops": ["deploy", "docker", "kubernetes", "ci", "cd", "pipeline", "infrastructure"],
+    "testing": ["test", "spec", "jest", "cypress", "playwright", "unit", "integration"],
+    "security": ["auth", "security", "vulnerability", "encrypt", "token", "jwt", "oauth"],
+    "general": []
   },
-
   "complexity_keywords": {
-    "high": ["payment", "auth", "security", "database", "migration", "refactor", "architecture"],
-    "medium": ["API", "integration", "component", "endpoint"],
-    "low": ["typo", "comment", "style", "rename", "format"]
+    "high": ["architecture", "migration", "refactor", "integration", "microservice", "distributed", "scalable", "security", "authentication", "authorization"],
+    "medium": ["feature", "api", "component", "database", "testing", "validation", "optimization"],
+    "low": ["typo", "rename", "comment", "docs", "readme", "formatting", "simple", "quick", "minor"]
   },
-
   "workflow_tools": {
-    "FIX_BUG": ["systematic-debugging", "serena"],
-    "ADD_FEATURE": ["brainstorming", "frontend-design", "serena"],
-    "MODIFY": ["serena", "context7"],
-    "EXPLAIN": ["serena", "context7"],
+    "FIX_BUG": ["systematic-debugging", "code-review"],
+    "ADD_FEATURE": ["brainstorming", "writing-plans", "test-driven-development"],
+    "MODIFY": ["writing-plans", "code-review"],
+    "EXPLAIN": [],
     "RESEARCH": ["context7", "web_reader"],
-    "TEST": ["TDD", "chrome-devtools"],
+    "TEST": ["test-driven-development", "verification-before-completion"],
     "COMMIT": ["dev-commit"]
+  },
+  "agent_recommendations": {
+    "FIX_BUG": ["thinker", "builder"],
+    "ADD_FEATURE": ["thinker", "builder", "reviewer"],
+    "MODIFY": ["thinker", "builder"],
+    "EXPLAIN": ["thinker"],
+    "RESEARCH": ["thinker"],
+    "TEST": ["builder", "reviewer"],
+    "COMMIT": []
   }
 }

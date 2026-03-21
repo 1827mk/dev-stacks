@@ -1,6 +1,6 @@
 ---
 name: research
-description: Research-only workflow. Spawns thinker subagent for analysis without implementation.
+description: This skill should be used when the user asks to "research", "analyze codebase", "understand how", "explain architecture", "investigate", "how does X work", or when research-only workflow without implementation is needed.
 ---
 
 # Dev-Stacks Research

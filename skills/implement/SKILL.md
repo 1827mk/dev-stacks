@@ -1,6 +1,6 @@
 ---
 name: implement
-description: Implementation-only workflow. Skips planning, goes straight to building.
+description: This skill should be used when the user asks to "implement", "build", "just do it", "skip planning", "direct implementation", or when implementation-only workflow without planning phase is needed.
 ---
 
 # Dev-Stacks Implement

@@ -1,6 +1,6 @@
 ---
 name: team
-description: Create agent team for complex tasks (complexity >= 0.6). Independent coordination with shared task list.
+description: This skill should be used when the user asks to "create team", "complex task", "parallel review", "full workflow", or when task complexity >= 0.6 requires coordinated agent team with shared task list.
 ---
 
 # Dev-Stacks Team
@@ -8,6 +8,7 @@ description: Create agent team for complex tasks (complexity >= 0.6). Independen
 Create coordinated agent team for complex tasks.
 
 ## When to Use
+
 - Complexity >= 0.6
 - Multiple components affected
 - Security/performance critical
@@ -19,21 +20,17 @@ Create coordinated agent team for complex tasks.
 - Coordinates work
 - Makes architectural decisions
 - Resolves conflicts
-- Skills: brainstorming, writing-plans
 
 ### Reviewer Agents (parallel)
 
 **Security Reviewer**
 - Focus: Auth, data handling, injection risks
-- Skills: code-review
 
 **Performance Reviewer**
 - Focus: Query optimization, caching, load
-- Skills: code-review
 
 **Testing Reviewer**
 - Focus: Test coverage, edge cases
-- Skills: TDD, chrome-devtools
 
 ## Coordination
 
