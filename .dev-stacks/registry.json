@@ -1,0 +1,46 @@
+{
+  "version": "3.0.0",
+  "updated": "2026-03-22T00:00:00Z",
+  "mcp_servers": [
+    "serena",
+    "memory",
+    "filesystem",
+    "context7",
+    "fetch",
+    "4_5v_mcp",
+    "doc-forge",
+    "ide",
+    "plugin_chrome-devtools-mcp_chrome-devtools",
+    "sequentialthinking",
+    "web_reader"
+  ],
+  "intent_categories": {
+    "FIX_BUG": ["fix", "bug", "error", "crash", "แก้", "พัง", "ไม่ทำงาน"],
+    "ADD_FEATURE": ["add", "create", "implement", "new", "เพิ่ม", "สร้าง"],
+    "MODIFY": ["change", "update", "refactor", "เปลี่ยน", "ปรับ"],
+    "EXPLAIN": ["explain", "how", "why", "อธิบาย", "ยังไง"],
+    "RESEARCH": ["find", "search", "docs", "หา", "ค้นหา"],
+    "DESIGN": ["design", "architect", "plan", "ออกแบบ", "วางแผน"],
+    "SECURITY": ["security", "auth", "vuln", "ความปลอดภัย"]
+  },
+  "complexity_factors": {
+    "high": {
+      "keywords": ["security", "payment", "auth", "migration", "database"],
+      "delta": 0.25
+    },
+    "medium": {
+      "keywords": ["api", "integration", "refactor", "feature"],
+      "delta": 0.10
+    },
+    "low": {
+      "keywords": ["typo", "comment", "rename", "docs"],
+      "delta": -0.15
+    }
+  },
+  "workflows": {
+    "quick": { "threshold": "< 0.20", "agents": [] },
+    "standard": { "threshold": "0.20-0.39", "agents": ["thinker", "builder"] },
+    "careful": { "threshold": "0.40-0.59", "agents": ["thinker", "builder", "reviewer"] },
+    "full": { "threshold": ">= 0.60", "agents": ["thinker", "builder", "reviewer", "reviewer"] }
+  }
+}
