@@ -1,5 +1,5 @@
 {
-  "description": "dev-stacks v3: session init, subagent context inject, prompt routing, compact snapshot, completion gate, subagent gate",
+  "description": "dev-stacks v4: instinct injection, adaptive routing, security guards, learning capture, completion gates",
   "hooks": {
     "SessionStart": [
       {
@@ -8,7 +8,7 @@
           {
             "type": "command",
             "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/session-start.sh\"",
-            "timeout": 15
+            "timeout": 20
           }
         ]
       }
@@ -29,8 +29,52 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/prompt-router.sh\"",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/intent-router.sh\"",
             "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/db-guard.sh\"",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/remote-guard.sh\"",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/secret-filter.sh\"",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/pattern-capture.sh\"",
+            "timeout": 5
           }
         ]
       }
@@ -52,7 +96,7 @@
         "hooks": [
           {
             "type": "prompt",
-            "prompt": "You are a completion gate for dev-stacks.\n\nFIRST: If stop_hook_active is true in the input — output nothing and exit. Never block when stop_hook_active is true (prevents infinite loop).\n\nLast assistant message: $LAST_ASSISTANT_MESSAGE\n\nReturn {\"decision\": \"block\", \"reason\": \"<explanation>\"} ONLY if ALL are true:\n1. stop_hook_active is false\n2. Code was written (Write/Edit/MultiEdit appear in transcript)\n3. No verification done (no test, no review, no build)\n4. An unresolved error was NOT shown to the user\n\nIn ALL other cases: output nothing (empty stdout).\n\nNever block: stop_hook_active true, user said stop, research/planning only, any doubt.\n\nIf blocking: JSON only.",
+            "prompt": "You are the dev-stacks completion gate.\n\nFIRST: If stop_hook_active is true — output nothing and exit immediately. This prevents infinite loops.\n\nCheck: $LAST_ASSISTANT_MESSAGE\n\nReturn {\"decision\": \"block\", \"reason\": \"<explanation>\"} ONLY if ALL are true:\n1. stop_hook_active is false\n2. Code was written (Write/Edit/MultiEdit in transcript)\n3. Zero verification performed (no test run, no review output, no build check)\n4. An unresolved error exists NOT shown to user\n\nOutput nothing in all other cases. When in doubt — do NOT block.\n\nJSON only if blocking.",
             "timeout": 30
           }
         ]
@@ -63,7 +107,7 @@
         "hooks": [
           {
             "type": "prompt",
-            "prompt": "You are a subagent output gate for dev-stacks.\n\nFIRST: If stop_hook_active is true — output nothing and exit immediately.\n\nLast assistant message: $LAST_ASSISTANT_MESSAGE\n\nReturn {\"decision\": \"block\", \"reason\": \"Missing required output header\"} ONLY if ALL are true:\n1. stop_hook_active is false\n2. Subagent performed code work (Write/Edit/MultiEdit in transcript)\n3. None of these appear in last message: THINKER ANALYSIS / BUILDER IMPLEMENTATION / REVIEWER VERIFICATION / RESEARCH COMPLETE / DESIGN COMPLETE\n\nIn ALL other cases: output nothing.\nWhen in doubt — do NOT block.\n\nIf blocking: JSON only.",
+            "prompt": "You are the dev-stacks subagent gate.\n\nFIRST: If stop_hook_active is true — output nothing and exit immediately.\n\nCheck: $LAST_ASSISTANT_MESSAGE\n\nReturn {\"decision\": \"block\", \"reason\": \"Missing output header\"} ONLY if ALL are true:\n1. stop_hook_active is false\n2. Code work was performed (Write/Edit/MultiEdit in transcript)\n3. None of these headers appear in last message:\n   SCOUT COMPLETE / ARCHITECT PLAN / BUILDER COMPLETE / VERIFIER COMPLETE / SENTINEL COMPLETE / CHRONICLER COMPLETE / HANDOFF VERIFIED\n\nOutput nothing in all other cases. When in doubt — do NOT block.\n\nJSON only if blocking.",
             "timeout": 20
           }
         ]

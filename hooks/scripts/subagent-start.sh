@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# dev-stacks v3 — SubagentStart hook
-# Injects DNA + registry context into every subagent when spawned
-# Output: hookSpecificOutput.additionalContext (per official docs)
+# dev-stacks v4 — SubagentStart
+# Injects DNA + top error patterns into every spawned agent
+# Output: hookSpecificOutput.additionalContext (verified format)
 
 set -euo pipefail
 
@@ -12,37 +12,47 @@ AGENT_TYPE=$(printf '%s' "$INPUT" | python3 -c "import json,sys; print(json.load
 PROJECT_DIR="${CLAUDE_PROJECT_DIR:-$CWD}"
 DS_DIR="$PROJECT_DIR/.dev-stacks"
 DNA="$DS_DIR/dna.json"
+LEDGER="$DS_DIR/error-ledger.jsonl"
 
 LINES=()
-LINES+=("[dev-stacks] subagent: $AGENT_TYPE")
+LINES+=("[dev-stacks] agent: $AGENT_TYPE | project: $PROJECT_DIR")
 
-# Inject DNA summary if available
+# DNA
 if [[ -f "$DNA" ]]; then
   NAME=$(python3 -c "import json; d=json.load(open('$DNA')); print(d.get('project',{}).get('name','?'))" 2>/dev/null || echo "?")
   LANGS=$(python3 -c "import json; d=json.load(open('$DNA')); print(', '.join(d.get('project',{}).get('languages',[])))" 2>/dev/null || echo "")
-  RISKS=$(python3 -c "import json; d=json.load(open('$DNA')); print(', '.join(d.get('risk_areas',[])))" 2>/dev/null || echo "none")
   AUTH=$(python3 -c "import json; d=json.load(open('$DNA')); print(d.get('critical_paths',{}).get('auth','unknown'))" 2>/dev/null || echo "unknown")
-  DATA=$(python3 -c "import json; d=json.load(open('$DNA')); print(d.get('critical_paths',{}).get('data_access','unknown'))" 2>/dev/null || echo "unknown")
-
-  LINES+=("project: $NAME | stack: $LANGS")
-  LINES+=("risk areas: $RISKS")
-  LINES+=("auth path: $AUTH")
-  LINES+=("data access: $DATA")
+  RISKS=$(python3 -c "import json; d=json.load(open('$DNA')); print(', '.join(d.get('risk_areas',[])))" 2>/dev/null || echo "none")
+  LINES+=("stack: $LANGS | auth: $AUTH | risks: $RISKS")
 fi
 
-LINES+=("")
-LINES+=("Core rules:")
-LINES+=("- Read file before writing — always use serena read_file first")
-LINES+=("- Ask user before web search — never search without permission")
-LINES+=("- Ask when unsure — never guess or invent content")
-LINES+=("- Never run git add or stage files")
+# Top error patterns
+if [[ -f "$LEDGER" ]]; then
+  TOP=$(python3 - "$LEDGER" << 'PYEOF'
+import json, sys, collections
+counts = collections.Counter()
+try:
+    with open(sys.argv[1]) as f:
+        for line in f:
+            line = line.strip()
+            if not line: continue
+            try:
+                entry = json.loads(line)
+                k = entry.get("pattern_key","")
+                if k: counts[k] += 1
+            except: pass
+    top = [f"{k}({v}x)" for k,v in counts.most_common(3) if v >= 2]
+    if top: print("known issues: " + ", ".join(top))
+except: pass
+PYEOF
+)
+  [[ -n "$TOP" ]] && LINES+=("$TOP")
+fi
+
+LINES+=("rules: read-before-write | ask-before-search | never-git-add | ask-when-unsure")
 
 CONTEXT=$(printf '%s\n' "${LINES[@]}")
-
-ESCAPED=$(python3 -c "
-import json, sys
-print(json.dumps(sys.stdin.read())[1:-1])
-" <<< "$CONTEXT")
+ESCAPED=$(python3 -c "import json,sys; print(json.dumps(sys.stdin.read())[1:-1])" <<< "$CONTEXT")
 
 printf '{"hookSpecificOutput":{"hookEventName":"SubagentStart","additionalContext":"%s"}}\n' "$ESCAPED"
 exit 0

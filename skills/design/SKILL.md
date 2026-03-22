@@ -1,35 +1,47 @@
 ---
 name: design
-description: Use this skill when creating architecture plans, designing interfaces, data models, or making structural decisions before implementation.
-version: 3.0.0
+description: Use this skill when designing technical approach, architecture, or interface contracts.
+version: 4.0.0
 ---
 
 # Design Skill
 
-Technical design — language-agnostic, pattern-driven.
+Think before building — language-agnostic.
 
-## Process
+## Protocol
 
-1. **Understand constraints** — read existing patterns from codebase, do not fight the architecture
-2. **Check library docs** — use `mcp__context7__get-library-docs` if integrating external tools
-3. **Design interface first** — define inputs/outputs/contracts before internals
-4. **Consider failure modes** — what breaks? what needs rollback? what needs idempotency?
-5. **Minimal change principle** — prefer extending over rewriting, prefer composition over inheritance
-6. **Ask before deciding** — if two approaches are valid, present both and ask user which to use
+1. Use `mcp__sequentialthinking__sequentialthinking` to reason through the approach
+2. Check `mcp__context7__get-library-docs` for any library involved
+3. Search `mcp__memory__search_nodes` for past architectural decisions
+4. If two valid approaches exist → present both, ask user to choose
+5. If web research needed → ask user for permission first
+
+## Principles
+
+- Prefer extending over rewriting
+- Prefer composition over inheritance
+- Design interface first (inputs/outputs/errors), then internals
+- Consider failure modes before happy path
+- Minimal surface area — only expose what's needed
 
 ## Output
 
 ```
 DESIGN COMPLETE
-Approach: [chosen pattern and why]
+
+Approach: [chosen pattern + rationale]
 Interface:
   Input:  [type/schema]
   Output: [type/schema]
   Errors: [error cases]
-Files to create/modify:
-- [path]: [purpose]
+
+Steps:
+1. [file, function, change]
+2. ...
+
 Alternatives considered:
 - [option]: [why not chosen]
+
 Questions for user:
-- [question]
+- [question] / (none)
 ```

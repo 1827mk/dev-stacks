@@ -1,44 +1,28 @@
 ---
 name: dna-builder
-description: Use this skill when /dev-stacks:registry is run. Scans codebase with Serena, builds .dev-stacks/dna.json and registry.json for agent context.
-version: 3.0.0
+description: Use this skill when /dev-stacks:init is run. Scans the codebase with Serena, builds .dev-stacks/dna.json — the project fingerprint all agents use.
+version: 4.0.0
 ---
 
 # DNA Builder Skill
 
-Scan codebase → build project fingerprint → save for all agents.
-
 ## Process
 
-### 1. Serena onboarding
-Call `mcp__serena__check_onboarding_performed`. If false → call `mcp__serena__onboarding` first.
+1. `mcp__serena__check_onboarding_performed` → if false, run `mcp__serena__onboarding` first
+2. `mcp__serena__list_dir` (root, non-recursive) → map structure
+3. `mcp__serena__find_file` for: `pom.xml`, `build.gradle`, `package.json`, `go.mod`, `Cargo.toml`, `pyproject.toml`
+4. Read build files → identify stack (languages, frameworks, build tool, deployment)
+5. `mcp__serena__find_symbol` for: auth entry, data access layer, external call points, error handler
+6. `mcp__serena__read_file` on 5 representative files → extract patterns (naming, error handling, logging, testing)
+7. `mcp__serena__list_memories` → read existing memories
 
-### 2. Project structure
-Use `mcp__serena__list_dir` (recursive=false on root) to map top-level dirs.
-Use `mcp__serena__find_file` to locate: `pom.xml`, `build.gradle`, `package.json`, `go.mod`, `Cargo.toml`, `pyproject.toml`.
-
-### 3. Stack detection
-Read build files → identify languages, frameworks, build tool, deployment context.
-
-### 4. Critical paths
-Use `mcp__serena__find_symbol` to locate:
-- Auth entry (login, authenticate, verifyToken, JwtFilter)
-- Data access (Repository, DAO, db.Query, gorm.DB)
-- External calls (RestTemplate, http.Client, axios, fetch)
-- Error handler (ControllerAdvice, middleware, ErrorBoundary)
-
-### 5. Patterns
-Read 5 representative files with `mcp__serena__read_file`. Extract naming, error handling, logging, testing conventions.
-
-### 6. Write files
-
-**`.dev-stacks/dna.json`:**
+Write `.dev-stacks/dna.json`:
 ```json
 {
-  "version": "3.0.0",
+  "version": "4.0.0",
   "created": "<ISO>",
   "project": {
-    "name": "<name>",
+    "name": "<n>",
     "type": "<monolith|microservice|library|frontend>",
     "languages": [],
     "frameworks": [],
@@ -57,36 +41,23 @@ Read 5 representative files with `mcp__serena__read_file`. Extract naming, error
     "error_handling": "<file:line>"
   },
   "patterns": {
-    "naming": "<description>",
-    "error_handling": "<description>",
-    "logging": "<description>",
-    "testing": "<description>"
+    "naming": "<desc>",
+    "error_handling": "<desc>",
+    "logging": "<desc>",
+    "testing": "<desc>"
   },
   "risk_areas": []
 }
 ```
 
-**`.dev-stacks/registry.json`:**
-```json
-{
-  "version": "3.0.0",
-  "updated": "<ISO>",
-  "mcp_servers": ["serena", "memory", "filesystem", "context7", "fetch"],
-  "intent_categories": { "<from orchestrator skill>" },
-  "complexity_factors": { "<high/medium/low keywords>" }
-}
-```
+Write summary to `mcp__serena__write_memory` key `dev-stacks/dna`.
 
 **Rule**: Unknown value → write `"unknown"`, never guess.
 
-### 7. Save to serena memory
-`mcp__serena__write_memory` key `dev-stacks/dna` — one-paragraph project summary.
-
-### 8. Report
+Report:
 ```
-Registry built: [project name]
+DNA built: [project name]
 Stack: [languages + frameworks]
-Critical paths mapped: [N]
-Risk areas: [list or "none"]
-Files: .dev-stacks/dna.json, .dev-stacks/registry.json
+Critical paths: [N] mapped
+Risk areas: [list]
 ```

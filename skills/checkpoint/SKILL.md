@@ -1,38 +1,37 @@
 ---
 name: checkpoint
-description: Use this skill to save current working state mid-task. Writes snapshot.md so work survives context compaction or session restart.
-version: 3.0.0
+description: Use this skill to save current working state mid-task. Writes .dev-stacks/snapshot.md so work survives context compaction or session restart.
+version: 4.0.0
 ---
 
 # Checkpoint Skill
-
-Save working state → survive context compaction.
 
 ## Process
 
 1. Collect from context (do not re-scan):
    - Original task prompt
-   - Thinker plan (verbatim — do not summarise)
-   - Files changed so far
-   - Files remaining from plan
+   - Architect plan verbatim (never summarise)
+   - Files changed so far + files remaining
    - Decisions made, open questions
 
 2. Run via Bash:
-   ```
-   git rev-parse HEAD
-   git rev-parse --abbrev-ref HEAD
-   git status --short
-   ```
+   - `git rev-parse HEAD`
+   - `git rev-parse --abbrev-ref HEAD`
+   - `git status --short`
 
 3. Write `.dev-stacks/snapshot.md`:
+
 ```markdown
-# dev-stacks snapshot — <timestamp>
+# dev-stacks snapshot — <ISO>
 
 ## Task
 <prompt verbatim>
 
+## Phase
+<current phase>
+
 ## Plan
-<thinker output verbatim or "(none)">
+<architect plan verbatim or "(none)">
 
 ## Progress
 Done:
@@ -41,8 +40,7 @@ Remaining:
 - [step N]: [file]
 
 ## Git
-HEAD: <SHA>
-Branch: <branch>
+HEAD: <SHA> | Branch: <branch>
 Modified: <git status>
 
 ## Decisions
@@ -58,11 +56,10 @@ Modified: <git status>
 4. If HEAD changed: git diff <SHA> HEAD
 ```
 
-4. `mcp__serena__write_memory` key `dev-stacks/checkpoint` — copy snapshot content.
+4. Write to `mcp__serena__write_memory` key `dev-stacks/checkpoint`
 
-5. Confirm to user:
+5. Confirm:
 ```
 Checkpoint saved → .dev-stacks/snapshot.md
-Remaining: [N steps]
-HEAD: [SHA]
+Remaining: [N steps] | HEAD: [SHA]
 ```

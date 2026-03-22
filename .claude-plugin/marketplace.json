@@ -6,25 +6,25 @@
     "url": "https://github.com/1827mk"
   },
   "metadata": {
-    "description": "Zero-friction AI development orchestrator for Claude Code",
-    "version": "3.0.0"
+    "description": "Living engineering team for Claude Code. Self-learning, memory-driven, production-ready.",
+    "version": "4.0.0"
   },
   "plugins": [
     {
       "name": "dev-stacks",
       "source": "./",
-      "description": "Full-stack dev orchestrator. Intent routing, adaptive workflows (quick/standard/careful/full), multi-agent teams (thinker/builder/reviewer), context persistence across compaction, safety guards. Thai/English.",
-      "version": "3.0.0",
+      "description": "Living engineering team: 6 specialized agents (scout/architect/builder/verifier/sentinel/chronicler), 5-phase workflow, self-learning memory pipeline, adaptive hooks. Thai/English.",
+      "version": "4.0.0",
       "author": {
         "name": "1827mk",
         "url": "https://github.com/1827mk"
       },
       "license": "MIT",
-      "keywords": ["orchestrator", "intent-routing", "agents", "workflows", "safety-guards", "thai-english", "full-stack"],
+      "keywords": ["orchestrator", "agents", "self-learning", "memory", "workflows", "thai-english", "full-stack"],
       "category": "Developer Tools",
       "requirements": {
         "claudeCode": ">=1.0.33",
-        "mcpServers": ["serena", "memory", "filesystem", "context7"]
+        "mcpServers": ["serena", "memory", "filesystem", "context7", "sequentialthinking"]
       }
     }
   ]

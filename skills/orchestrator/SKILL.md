@@ -1,87 +1,84 @@
 ---
 name: orchestrator
-description: Use this skill when routing a task to the correct workflow and agents. Reads DNA and state, scores complexity, selects workflow, spawns agents in correct order.
-version: 3.0.0
+description: Use this skill to route a task through the correct workflow and spawn the right agents in the right order. Core of /dev-stacks:do.
+version: 4.0.0
 ---
 
-# Orchestrator Skill
+# Orchestrator Skill — 5-Phase Workflow
 
-Route tasks → select workflow → spawn agents → gate output.
+Route → execute → gate output at every phase.
 
-## Step 1 — Load context
+## Step 1 — Classify
 
-1. Read `.dev-stacks/dna.json` if exists → project name, stack, risk areas
-2. Read `.dev-stacks/state.json` if exists and recent (< 30 min) → use its classification
-3. Read `.dev-stacks/snapshot.md` if exists → ask user: resume or start fresh?
-
-## Step 2 — Classify (if no valid state)
-
-**Intent** (Thai/English):
+**Intent** (Thai/English keywords):
 
 | Intent | Keywords |
 |--------|----------|
 | FIX_BUG | fix, bug, error, crash, แก้, พัง, ไม่ทำงาน |
 | ADD_FEATURE | add, create, implement, new, เพิ่ม, สร้าง |
-| MODIFY | change, update, refactor, เปลี่ยน, ปรับ |
+| MODIFY | change, refactor, update, เปลี่ยน, ปรับ |
 | EXPLAIN | explain, how, why, อธิบาย, ยังไง |
 | RESEARCH | find, search, docs, หา, ค้นหา |
-| DESIGN | design, architect, plan, ออกแบบ, วางแผน |
+| DESIGN | design, architect, plan, ออกแบบ |
 | SECURITY | security, auth, vuln, ความปลอดภัย |
 
-**Complexity** (start 0.20, adjust):
+**Complexity** (start 0.20):
 
 | Condition | Delta |
 |-----------|-------|
-| security / payment / auth / DB migration | +0.25 |
+| security/payment/auth/DB migration | +0.25 |
 | > 3 files affected | +0.15 |
 | external API integration | +0.10 |
-| ADD_FEATURE or DESIGN intent | +0.10 |
+| ADD_FEATURE / DESIGN | +0.10 |
 | SECURITY intent | +0.20 |
 | single file, clear change | −0.10 |
-| typo / comment / rename | −0.15 |
-| EXPLAIN / RESEARCH intent | −0.15 |
+| typo/comment/rename | −0.15 |
+| EXPLAIN/RESEARCH | −0.15 |
 
-Clamp to [0.10, 1.0].
+Clamp [0.10, 1.0].
 
-## Step 3 — Select workflow
+## Step 2 — Select workflow
 
-| Score | Workflow | Agents |
+| Score | Workflow | Phases |
 |-------|----------|--------|
-| < 0.20 | quick | Claude handles directly |
-| 0.20–0.39 | standard | thinker → builder |
-| 0.40–0.59 | careful | thinker → builder → reviewer |
-| ≥ 0.60 | full | thinker → builder → reviewer×2 parallel |
+| < 0.20 | **quick** | Claude handles directly |
+| 0.20–0.39 | **standard** | scout → architect → builder |
+| 0.40–0.59 | **careful** | scout → architect → builder → verifier → sentinel |
+| ≥ 0.60 | **full** | all 5 phases + chronicler |
 
-## Step 4 — Execute
+## Step 3 — Execute
 
 ### quick
-Handle directly. No subagents. Output result.
+Handle directly. No agents. Output result.
 
 ### standard
-1. Spawn **thinker** (uses: analyze + design skills)
-2. Wait for `THINKER ANALYSIS`
-3. Spawn **builder** (uses: implement skill)
-4. Report `BUILDER IMPLEMENTATION` to user
+1. Spawn **scout** → wait for `SCOUT COMPLETE`
+2. Spawn **architect** with scout output → wait for `ARCHITECT PLAN`
+3. If open questions in plan → ask user, wait for answers
+4. Spawn **builder** → wait for `BUILDER COMPLETE`
+5. Save state. Report to user.
 
 ### careful
-1. Spawn **thinker**
-2. Spawn **builder**
-3. Spawn **reviewer** (uses: analyze + security skills)
-4. If `NEEDS FIXES`: present issues to user, ask how to proceed
-5. Report final status
+1–4 same as standard
+5. Spawn **verifier** → wait for `VERIFIER COMPLETE`
+6. Spawn **sentinel** → wait for `SENTINEL COMPLETE`
+7. If any CRITICAL issue → present to user, ask how to proceed
+8. Report.
 
 ### full
-Same as careful + spawn two reviewers in parallel:
-- Reviewer A: security focus (security skill)
-- Reviewer B: correctness + production readiness (analyze skill)
-Both must pass before reporting complete.
+1–6 same as careful
+7. Spawn **handoff-verify** (fresh context) → wait for `HANDOFF VERIFIED`
+8. Spawn **chronicler** → wait for `CHRONICLER COMPLETE`
+9. Final report.
 
-## Step 5 — Summary
+## Step 4 — Summary
 
 ```
 dev-stacks: [WORKFLOW] complete
 Intent: [INTENT] | Complexity: [SCORE]
 Agents: [list]
-Files: [from builder output]
-Status: [PASSED / action needed]
+Files: [from builder]
+Tests: [from verifier]
+Security: [from sentinel]
+Memory: [from chronicler]
 ```
