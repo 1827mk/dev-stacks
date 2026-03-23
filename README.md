@@ -21,7 +21,7 @@
 ## First time setup
 
 ```
-/dev-stacks:init
+/dev-stacks:registry
 ```
 
 Scans your codebase → builds DNA → ready.

@@ -27,7 +27,7 @@ if [[ -f "$DNA" ]]; then
   RISKS=$(python3 -c "import json; d=json.load(open('$DNA')); print(', '.join(d.get('risk_areas',[])))" 2>/dev/null || echo "none")
   LINES+=("project: $NAME | stack: $LANGS | risk: $RISKS")
 else
-  LINES+=("DNA not found — run /dev-stacks:init")
+  LINES+=("DNA not found — run /dev-stacks:registry")
 fi
 
 # Error patterns from ledger (instinct injection)
@@ -71,7 +71,7 @@ if [[ -f "$SNAPSHOT" ]]; then
   LINES+=("⚠️ Read snapshot before doing anything.")
 else
   LINES+=("")
-  LINES+=("commands: /dev-stacks  /dev-stacks:think  /dev-stacks:do  /dev-stacks:check  /dev-stacks:learn  /dev-stacks:memory  /dev-stacks:init")
+  LINES+=("commands: /dev-stacks  /dev-stacks:think  /dev-stacks:do  /dev-stacks:check  /dev-stacks:learn  /dev-stacks:memory  /dev-stacks:registry")
 fi
 
 CONTEXT=$(printf '%s\n' "${LINES[@]}")

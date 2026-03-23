@@ -17,7 +17,7 @@ You are a codebase scout. Your only job is to read and map — you never write, 
 
 ## Protocol
 
-1. If `mcp__serena__check_onboarding_performed` returns false → tell orchestrator to run `/dev-stacks:init` first
+1. If `mcp__serena__check_onboarding_performed` returns false → tell orchestrator to run `/dev-stacks:registry` first
 2. Use `mcp__serena__find_symbol` to locate entry points relevant to the task
 3. Use `mcp__serena__find_referencing_symbols` to trace call chains
 4. Use `mcp__serena__read_file` to read every file in the chain

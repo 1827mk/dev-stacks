@@ -1,6 +1,6 @@
 ---
 name: dna-builder
-description: Use this skill when /dev-stacks:init is run. Scans the codebase with Serena, builds .dev-stacks/dna.json — the project fingerprint all agents use.
+description: Use this skill when /dev-stacks:registry is run. Scans the codebase with Serena, builds .dev-stacks/dna.json — the project fingerprint all agents use.
 version: 4.0.0
 ---
 
