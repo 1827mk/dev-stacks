@@ -96,7 +96,7 @@
         "hooks": [
           {
             "type": "prompt",
-            "prompt": "You are the dev-stacks completion gate.\n\nCRITICAL: If stop_hook_active is true — output nothing. Never block when stop_hook_active is true.\n\nLast message: $LAST_ASSISTANT_MESSAGE\n\nReturn {\"ok\": false, \"reason\": \"<brief reason>\"} ONLY if ALL are true:\n1. stop_hook_active is false\n2. Code was written (Write/Edit/MultiEdit in transcript)\n3. Zero verification done (no test, no review, no build)\n4. An unresolved error was NOT shown to user\n\nIn ALL other cases: output nothing.\nWhen in doubt — output nothing.\n\nIf blocking: {\"ok\": false, \"reason\": \"...\"} only, no other text.",
+            "prompt": "You are the dev-stacks completion gate.\n\nCRITICAL: If stop_hook_active is true — output nothing. Never block when stop_hook_active is true.\n\nLast message: $LAST_ASSISTANT_MESSAGE\n\nSTEP 1 — Check transcript for Write/Edit/MultiEdit tool calls:\n- If NONE found → output nothing (read-only task, no verification needed)\n- If ANY found → proceed to STEP 2\n\nSTEP 2 — Check for verification evidence:\n- Tests run (Bash with test command)\n- Code review mentioned\n- Build/lint run\n- If ANY verification done → output nothing\n- If ZERO verification → proceed to STEP 3\n\nSTEP 3 — Check for unresolved error:\n- If last message shows an error that was NOT addressed → output nothing\n- If no unresolved error → block\n\nIf blocking: {\"ok\": false, \"reason\": \"Code changes without verification\"} only.\n\nIMPORTANT: Read/Glob/Grep tools are NOT code changes. Only Write/Edit/MultiEdit count.",
             "timeout": 30
           }
         ]
@@ -107,7 +107,7 @@
         "hooks": [
           {
             "type": "prompt",
-            "prompt": "You are the dev-stacks subagent gate.\n\nCRITICAL: If stop_hook_active is true — output nothing immediately.\n\nLast message: $LAST_ASSISTANT_MESSAGE\n\nReturn {\"ok\": false, \"reason\": \"Missing output header\"} ONLY if ALL are true:\n1. stop_hook_active is false\n2. Code work was done (Write/Edit/MultiEdit in transcript)\n3. None of these appear in last message:\n   SCOUT COMPLETE / ARCHITECT PLAN / BUILDER COMPLETE / VERIFIER COMPLETE / SENTINEL COMPLETE / CHRONICLER COMPLETE / HANDOFF VERIFIED\n\nIn ALL other cases: output nothing.\nWhen in doubt — output nothing.\n\nIf blocking: {\"ok\": false, \"reason\": \"...\"} only.",
+            "prompt": "You are the dev-stacks subagent gate.\n\nCRITICAL: If stop_hook_active is true — output nothing immediately.\n\nLast message: $LAST_ASSISTANT_MESSAGE\n\nSTEP 1 — Check transcript for Write/Edit/MultiEdit tool calls:\n- If NONE found → output nothing (read-only agent like scout/sentinel)\n- If ANY found → proceed to STEP 2\n\nSTEP 2 — Check for completion header in last message:\n- SCOUT COMPLETE / ARCHITECT PLAN / BUILDER COMPLETE / VERIFIER COMPLETE / SENTINEL COMPLETE / CHRONICLER COMPLETE / HANDOFF VERIFIED\n- If ANY header present → output nothing\n- If NO header → block\n\nIf blocking: {\"ok\": false, \"reason\": \"Missing output header after code changes\"} only.\n\nIMPORTANT: Read/Glob/Grep tools are NOT code changes.",
             "timeout": 20
           }
         ]
