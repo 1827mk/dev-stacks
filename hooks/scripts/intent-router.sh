@@ -37,8 +37,8 @@ for intent, (keywords, _) in INTENTS.items():
 best = max(scores, key=lambda k: scores[k]) if any(scores.values()) else "GENERAL"
 _, delta = INTENTS.get(best, ([], 0.0))
 
-# Complexity
-complexity = 0.20
+# Complexity (start 0.25)
+complexity = 0.25
 HIGH = ["payment","auth","security","database","migration","oauth","webhook","encryption"]
 MED  = ["api","integration","service","endpoint","component","hook"]
 LOW  = ["typo","comment","rename","format","log","message","string"]
@@ -53,30 +53,28 @@ for kw in LOW:
 complexity += delta
 complexity = max(0.10, min(1.0, round(complexity, 2)))
 
-# Phase recommendation
-if complexity < 0.20:
+# Phase recommendation (optimized thresholds)
+if complexity < 0.30:
     phase = "quick — handle directly"
     agents = "none"
-elif complexity < 0.40:
+elif complexity < 0.50:
     phase = "standard — scout + architect → builder"
     agents = "scout, architect, builder"
-elif complexity < 0.60:
-    phase = "careful — full 5-phase"
+elif complexity < 0.70:
+    phase = "careful — +verifier + sentinel"
     agents = "scout, architect, builder, verifier, sentinel"
 else:
-    phase = "full — 5-phase + parallel security"
+    phase = "full — +chronicler"
     agents = "scout, architect, builder, verifier, sentinel, chronicler"
 
-# Adaptive hook hints (which capabilities are relevant)
+# Adaptive hook hints
 hooks = []
 if best in ("FIX_BUG", "ADD_FEATURE", "MODIFY"):
     hooks.append("verify-loop")
-if best == "SECURITY" or complexity >= 0.60:
+if best == "SECURITY" or complexity >= 0.70:
     hooks.append("sentinel")
 if best == "DESIGN":
     hooks.append("sequential-thinking + context7")
-if complexity >= 0.40:
-    hooks.append("handoff-verify")
 
 print(f"[dev-stacks] {best} | complexity: {complexity} | {phase}")
 print(f"→ agents: {agents}")

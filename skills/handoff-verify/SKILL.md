@@ -19,7 +19,8 @@ After a long session, Claude may have blind spots. A fresh agent with only the e
    - List of files changed (from builder output)
    - The architect plan (from plan.md)
 
-2. Spawn a fresh **verifier** subagent with ONLY these essentials as context (not the full conversation)
+2. Spawn a fresh **dev-stacks:verifier** subagent with ONLY these essentials as context (not the full conversation)
+   - Use `subagent_type: dev-stacks:verifier` when calling Agent tool
 
 3. Fresh agent's job:
    - Read each changed file fresh with Serena
