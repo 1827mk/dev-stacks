@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # dev-stacks v4 — secret-filter (PostToolUse)
 
-set -euo pipefail
+set -uo pipefail
 INPUT=$(cat)
 CONTENT=$(printf '%s' "$INPUT" | python3 -c "
 import json,sys

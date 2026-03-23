@@ -3,7 +3,7 @@
 # Input field: 'prompt' (verified from official docs — NOT user_prompt)
 # Output: plain stdout → injected as context before Claude processes
 
-set -euo pipefail
+set -uo pipefail
 
 INPUT=$(cat)
 PROMPT=$(printf '%s' "$INPUT" | python3 -c "import json,sys; print(json.load(sys.stdin).get('prompt',''))" 2>/dev/null || echo "")

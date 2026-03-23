@@ -3,7 +3,7 @@
 # Loads: MCP memory patterns + Serena DNA + snapshot → inject as additionalContext
 # Output format: hookSpecificOutput.additionalContext (verified from official docs)
 
-set -euo pipefail
+set -uo pipefail
 
 INPUT=$(cat)
 CWD=$(printf '%s' "$INPUT" | python3 -c "import json,sys; print(json.load(sys.stdin).get('cwd',''))" 2>/dev/null || echo "")

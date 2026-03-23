@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # dev-stacks v4 — db-guard (PreToolUse: Bash)
 
-set -euo pipefail
+set -uo pipefail
 INPUT=$(cat)
 CMD=$(printf '%s' "$INPUT" | python3 -c "import json,sys; print(json.load(sys.stdin).get('tool_input',{}).get('command',''))" 2>/dev/null || echo "")
 [[ -z "$CMD" ]] && exit 0

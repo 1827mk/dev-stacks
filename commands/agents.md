@@ -5,7 +5,7 @@ allowed-tools: Read, Bash, mcp__serena__read_file, mcp__serena__list_memories, m
 model: sonnet
 ---
 
-# dev-stacks
+# dev-stacks: agents
 
 Task: $ARGUMENTS
 
