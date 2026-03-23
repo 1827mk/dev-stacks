@@ -12,13 +12,13 @@ Task: $ARGUMENTS
 ## Steps
 
 1. **Load context**
-   - Read `.dev-stacks/snapshot.md` — if unfinished task exists, show user and ask: resume or start fresh?
+   - Read `.dev-stacks/snapshot.md` — if unfinished task exists, show and ask: resume or start fresh?
    - Read `.dev-stacks/dna.json` — load project context
    - Read `.dev-stacks/state.json` — get last intent/complexity if < 30 min old
 
 2. **Route based on task**
-   - If task is a question/explanation → answer directly, no agents
-   - If task is ambiguous → ask 1 clarifying question before routing
+   - Question/explanation → answer directly, no agents
+   - Task is ambiguous → ask ONE clarifying question first
    - Otherwise → use **orchestrator** skill to classify and execute
 
 3. **Never assume** — if unsure what the user wants, ask before spawning agents
