@@ -1,6 +1,6 @@
 ---
 description: Chronicler consolidates session learnings into memory — with user confirmation before promoting patterns
-argument-hint: [optional: specific topic or pattern to capture]
+argument-hint: "[topic or pattern - optional]"
 allowed-tools: Read, Bash, mcp__serena__write_memory, mcp__serena__list_memories, mcp__serena__read_memory, mcp__memory__create_entities, mcp__memory__add_observations, mcp__memory__create_relations, mcp__memory__search_nodes, mcp__memory__read_graph
 model: sonnet
 ---

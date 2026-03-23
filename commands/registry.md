@@ -1,6 +1,6 @@
 ---
 description: Register project and build DNA — run once per project, or after major refactor
-argument-hint: [optional: project path, defaults to current directory]
+argument-hint: "[project path - optional, defaults to cwd]"
 model: opus
 ---
 

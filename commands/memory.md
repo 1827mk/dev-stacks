@@ -1,6 +1,6 @@
 ---
 description: View and manage the memory graph — patterns, decisions, security findings
-argument-hint: [optional: clear <pattern> | search <query>]
+argument-hint: "[clear pattern | search query - optional]"
 allowed-tools: Read, Bash, mcp__serena__list_memories, mcp__serena__read_memory, mcp__memory__read_graph, mcp__memory__search_nodes, mcp__memory__delete_entities, mcp__memory__delete_relations
 model: haiku
 ---

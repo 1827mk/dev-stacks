@@ -1,6 +1,6 @@
 ---
 description: Run verifier + sentinel independently on current changes — no build, just check
-argument-hint: [optional: files or scope to check]
+argument-hint: "[files or scope - optional]"
 allowed-tools: Read, Glob, Grep, LS, Bash, mcp__serena__read_file, mcp__serena__find_symbol, mcp__serena__search_for_pattern, mcp__memory__search_nodes
 model: sonnet
 ---
