@@ -1,11 +1,13 @@
 ---
-description: Smart entry point — reads context and routes to the right workflow automatically
+description: Alias for /dev-stacks — smart entry point that reads context and routes to the right workflow
 argument-hint: [task description or question]
 allowed-tools: Read, Bash, mcp__serena__read_file, mcp__serena__list_memories, mcp__serena__read_memory, mcp__memory__search_nodes
 model: sonnet
 ---
 
-# dev-stacks
+# dev-stacks:run
+
+> **Note:** This is an alias for `/dev-stacks`. Use either command interchangeably.
 
 Task: $ARGUMENTS
 
