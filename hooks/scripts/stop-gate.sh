@@ -81,7 +81,7 @@ if has_unresolved_error:
 
 # Code changes without verification - BLOCK
 import json
-response = {"ok": False, "reason": "Code changes without verification"}
+response = {"block": True, "reason": "Code changes detected but no verification found. Run tests or add verification evidence before stopping."}
 print(json.dumps(response))
 sys.exit(0)
 PYEOF

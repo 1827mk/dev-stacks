@@ -67,7 +67,7 @@ if has_header:
 
 # Code changes without completion header - BLOCK
 import json
-response = {"ok": False, "reason": "Missing output header after code changes"}
+response = {"block": True, "reason": "Code changes detected but no completion header found. Add appropriate header (SCOUT COMPLETE, BUILDER COMPLETE, etc.) before stopping."}
 print(json.dumps(response))
 sys.exit(0)
 PYEOF
