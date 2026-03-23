@@ -96,7 +96,7 @@
         "hooks": [
           {
             "type": "prompt",
-            "prompt": "You are the dev-stacks completion gate.\n\nFIRST: If stop_hook_active is true — output nothing and exit immediately. This prevents infinite loops.\n\nCheck: $LAST_ASSISTANT_MESSAGE\n\nReturn {\"decision\": \"block\", \"reason\": \"<explanation>\"} ONLY if ALL are true:\n1. stop_hook_active is false\n2. Code was written (Write/Edit/MultiEdit in transcript)\n3. Zero verification performed (no test run, no review output, no build check)\n4. An unresolved error exists NOT shown to user\n\nOutput nothing in all other cases. When in doubt — do NOT block.\n\nJSON only if blocking.",
+            "prompt": "You are the dev-stacks completion gate.\n\nCheck if this stop is valid. Look at the conversation transcript.\n\nBLOCK (return JSON with decision block) ONLY if ALL conditions are true:\n1. stop_hook_active is false (not already in a hook loop)\n2. Code was written (Write/Edit/MultiEdit tools were used)\n3. Zero verification was performed (no test run, no review, no build check in transcript)\n4. An unresolved error exists that was NOT shown to the user\n\nTo BLOCK, output ONLY this JSON (no other text):\n{\"decision\": \"block\", \"reason\": \"<brief explanation>\"}\n\nTo ALLOW, output NOTHING (empty response) or just: {}\n\nWhen in doubt — ALLOW. Do not block unless clearly unsafe.",
             "timeout": 30
           }
         ]
@@ -107,7 +107,7 @@
         "hooks": [
           {
             "type": "prompt",
-            "prompt": "You are the dev-stacks subagent gate.\n\nFIRST: If stop_hook_active is true — output nothing and exit immediately.\n\nCheck: $LAST_ASSISTANT_MESSAGE\n\nReturn {\"decision\": \"block\", \"reason\": \"Missing output header\"} ONLY if ALL are true:\n1. stop_hook_active is false\n2. Code work was performed (Write/Edit/MultiEdit in transcript)\n3. None of these headers appear in last message:\n   SCOUT COMPLETE / ARCHITECT PLAN / BUILDER COMPLETE / VERIFIER COMPLETE / SENTINEL COMPLETE / CHRONICLER COMPLETE / HANDOFF VERIFIED\n\nOutput nothing in all other cases. When in doubt — do NOT block.\n\nJSON only if blocking.",
+            "prompt": "You are the dev-stacks subagent gate.\n\nCheck if subagent output is complete. Look at the last assistant message.\n\nBLOCK (return JSON with decision block) ONLY if ALL conditions are true:\n1. stop_hook_active is false\n2. Code work was performed (Write/Edit/MultiEdit used)\n3. None of these required headers appear in the last message:\n   SCOUT COMPLETE / ARCHITECT PLAN / BUILDER COMPLETE / VERIFIER COMPLETE / SENTINEL COMPLETE / CHRONICLER COMPLETE / HANDOFF VERIFIED\n\nTo BLOCK, output ONLY this JSON (no other text):\n{\"decision\": \"block\", \"reason\": \"Missing required output header\"}\n\nTo ALLOW, output NOTHING (empty response) or just: {}\n\nWhen in doubt — ALLOW. Do not block unless clearly incomplete.",
             "timeout": 20
           }
         ]
